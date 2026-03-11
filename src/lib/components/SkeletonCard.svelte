@@ -1,5 +1,4 @@
 <script>
-	/** Random height for natural masonry feel */
 	const height = 160 + Math.floor(Math.random() * 200);
 </script>
 

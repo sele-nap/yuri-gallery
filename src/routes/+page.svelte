@@ -5,8 +5,11 @@
 	import ImageCard from '$lib/components/ImageCard.svelte';
 	import SkeletonCard from '$lib/components/SkeletonCard.svelte';
 	import Lightbox from '$lib/components/Lightbox.svelte';
+	import Toast from '$lib/components/Toast.svelte';
+	import BackToTop from '$lib/components/BackToTop.svelte';
+	import KeyboardShortcuts from '$lib/components/KeyboardShortcuts.svelte';
 	import { fetchPosts } from '$lib/utils/danbooru.js';
-	import { activeSearch, showFavoritesOnly } from '$lib/stores/gallery.js';
+	import { activeSearch, activeSort, showFavoritesOnly } from '$lib/stores/gallery.js';
 	import { favorites } from '$lib/stores/favorites.js';
 
 	/** @type {import('../lib/utils/danbooru').DanbooruPost[]} */
@@ -21,6 +24,7 @@
 	let observer = null;
 
 	$: currentSearch = $activeSearch;
+	$: currentSort = $activeSort;
 	$: onlyFavorites = $showFavoritesOnly;
 	$: favoritedIds = $favorites;
 
@@ -28,9 +32,9 @@
 		? posts.filter((p) => favoritedIds.includes(p.id))
 		: posts;
 
-	// Reset when search changes
 	$: {
-		currentSearch; // reactive dependency
+		currentSearch;
+		currentSort;
 		resetAndLoad();
 	}
 
@@ -48,7 +52,8 @@
 		error = '';
 
 		try {
-			const newPosts = await fetchPosts({ page, tags: currentSearch });
+			const tags = [currentSearch, currentSort].filter(Boolean).join(' ');
+			const newPosts = await fetchPosts({ page, tags });
 			if (newPosts.length === 0) {
 				hasMore = false;
 			} else {
@@ -71,7 +76,6 @@
 			},
 			{ rootMargin: '300px' }
 		);
-
 		if (sentinel) observer.observe(sentinel);
 	});
 
@@ -86,11 +90,10 @@
 	<title>百合 Gallery</title>
 </svelte:head>
 
-<Header />
+<Header imageCount={posts.length} />
 <TagFilter />
 
 <main class="max-w-7xl mx-auto px-3 pb-16">
-	<!-- Favorites empty state -->
 	{#if onlyFavorites && displayedPosts.length === 0 && !loading}
 		<div class="flex flex-col items-center justify-center py-24 gap-4 animate-slide-up">
 			<p class="text-6xl">♡</p>
@@ -100,21 +103,18 @@
 			</p>
 		</div>
 
-	<!-- Error state -->
 	{:else if error && posts.length === 0}
 		<div class="flex flex-col items-center justify-center py-24 gap-4 animate-slide-up">
 			<p class="text-pink-soft/40 text-center">{error}</p>
 			<button on:click={resetAndLoad} class="btn-primary">Try again</button>
 		</div>
 
-	<!-- Gallery -->
 	{:else}
 		<div class="masonry">
 			{#each displayedPosts as post (post.id)}
 				<ImageCard {post} />
 			{/each}
 
-			<!-- Skeleton cards while loading -->
 			{#if loading}
 				{#each Array(8) as _, i}
 					<SkeletonCard />
@@ -122,7 +122,6 @@
 			{/if}
 		</div>
 
-		<!-- Error inline -->
 		{#if error}
 			<div class="text-center py-8">
 				<p class="text-pink-soft/40 text-sm mb-3">{error}</p>
@@ -130,14 +129,12 @@
 			</div>
 		{/if}
 
-		<!-- End of results -->
 		{#if !hasMore && posts.length > 0}
 			<div class="text-center py-12">
 				<p class="text-pink-soft/20 text-sm font-display italic">~ End of gallery ~</p>
 			</div>
 		{/if}
 
-		<!-- Infinite scroll sentinel (hidden when favorites-only mode) -->
 		{#if !onlyFavorites}
 			<div bind:this={sentinel} class="h-1"></div>
 		{/if}
@@ -145,3 +142,6 @@
 </main>
 
 <Lightbox {posts} />
+<Toast />
+<BackToTop />
+<KeyboardShortcuts />

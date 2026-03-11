@@ -1,7 +1,9 @@
 <script>
 	import { lightboxPost, activeSearch } from '$lib/stores/gallery.js';
 	import { favorites } from '$lib/stores/favorites.js';
+	import { toast } from '$lib/stores/toast.js';
 	import { parseTags, getDanbooruUrl } from '$lib/utils/danbooru.js';
+	import { onDestroy } from 'svelte';
 
 	/** @type {import('../utils/danbooru').DanbooruPost[]} */
 	export let posts = [];
@@ -14,23 +16,52 @@
 	$: currentIndex = post ? posts.findIndex((p) => p.id === post.id) : -1;
 
 	let imageLoaded = false;
+	let slideshowActive = false;
+	let slideshowTimer = null;
 
 	$: if (post) imageLoaded = false;
+	$: if (!post && slideshowActive) stopSlideshow();
 
 	function close() {
+		stopSlideshow();
 		lightboxPost.set(null);
 	}
 
 	function prev() {
-		if (currentIndex > 0) {
-			lightboxPost.set(posts[currentIndex - 1]);
-		}
+		if (currentIndex > 0) lightboxPost.set(posts[currentIndex - 1]);
 	}
 
 	function next() {
-		if (currentIndex < posts.length - 1) {
-			lightboxPost.set(posts[currentIndex + 1]);
+		if (currentIndex < posts.length - 1) lightboxPost.set(posts[currentIndex + 1]);
+		else stopSlideshow();
+	}
+
+	function toggleSlideshow() {
+		if (slideshowActive) {
+			stopSlideshow();
+		} else {
+			slideshowActive = true;
+			slideshowTimer = setInterval(next, 3000);
+			toast.add('Slideshow started', 'info');
 		}
+	}
+
+	function stopSlideshow() {
+		slideshowActive = false;
+		clearInterval(slideshowTimer);
+		slideshowTimer = null;
+	}
+
+	function toggleFavorite() {
+		if (!post) return;
+		favorites.toggle(post.id);
+		toast.add(isFavorited ? 'Removed from favorites' : 'Added to favorites ♥');
+	}
+
+	async function copyLink() {
+		if (!post) return;
+		await navigator.clipboard.writeText(getDanbooruUrl(post.id));
+		toast.add('Link copied!', 'info');
 	}
 
 	/** @param {KeyboardEvent} e */
@@ -39,6 +70,7 @@
 		if (e.key === 'Escape') close();
 		if (e.key === 'ArrowLeft') prev();
 		if (e.key === 'ArrowRight') next();
+		if (e.key === 'f' || e.key === 'F') toggleFavorite();
 	}
 
 	/** @param {string} tag */
@@ -46,12 +78,13 @@
 		activeSearch.set(tag);
 		close();
 	}
+
+	onDestroy(stopSlideshow);
 </script>
 
 <svelte:window on:keydown={handleKey} />
 
 {#if post}
-	<!-- Backdrop -->
 	<!-- svelte-ignore a11y-click-events-have-key-events a11y-no-noninteractive-element-interactions -->
 	<div
 		class="fixed inset-0 z-50 bg-bg-primary/95 backdrop-blur-md flex items-center justify-center p-4"
@@ -60,40 +93,18 @@
 		aria-modal="true"
 		tabindex="-1"
 	>
-		<!-- Close -->
-		<button
-			on:click={close}
-			class="absolute top-4 right-4 w-10 h-10 rounded-full glass flex items-center justify-center text-pink-soft/60 hover:text-pink-mid transition-colors z-10"
-			aria-label="Close"
-		>
-			✕
-		</button>
+		<button on:click={close} class="absolute top-4 right-4 w-10 h-10 rounded-full glass flex items-center justify-center text-pink-soft/60 hover:text-pink-mid transition-colors z-10" aria-label="Close">✕</button>
 
-		<!-- Navigation arrows -->
 		{#if currentIndex > 0}
-			<button
-				on:click={prev}
-				class="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full glass flex items-center justify-center text-pink-soft/60 hover:text-pink-mid transition-colors z-10"
-				aria-label="Previous"
-			>
-				←
-			</button>
+			<button on:click={prev} class="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full glass flex items-center justify-center text-pink-soft/60 hover:text-pink-mid transition-colors z-10" aria-label="Previous">←</button>
 		{/if}
-
 		{#if currentIndex < posts.length - 1}
-			<button
-				on:click={next}
-				class="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full glass flex items-center justify-center text-pink-soft/60 hover:text-pink-mid transition-colors z-10"
-				aria-label="Next"
-			>
-				→
-			</button>
+			<button on:click={next} class="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full glass flex items-center justify-center text-pink-soft/60 hover:text-pink-mid transition-colors z-10" aria-label="Next">→</button>
 		{/if}
 
-		<!-- Main content -->
 		<div class="flex flex-col lg:flex-row gap-4 max-h-[90vh] w-full max-w-6xl animate-slide-up">
 			<!-- Image -->
-			<div class="flex-1 flex items-center justify-center min-h-0">
+			<div class="flex-1 flex items-center justify-center min-h-0 relative">
 				{#if !imageLoaded}
 					<div class="w-full max-h-[80vh] aspect-square bg-bg-card rounded-2xl animate-pulse"></div>
 				{/if}
@@ -105,86 +116,66 @@
 					class:opacity-100={imageLoaded}
 					on:load={() => (imageLoaded = true)}
 				/>
+				{#if slideshowActive}
+					<div class="absolute bottom-3 left-1/2 -translate-x-1/2 flex items-center gap-2 glass px-3 py-1.5 rounded-full text-xs text-purple-soft/80">
+						<span class="w-2 h-2 rounded-full bg-purple-mid animate-pulse"></span>
+						Slideshow
+					</div>
+				{/if}
 			</div>
 
 			<!-- Sidebar -->
 			<div class="lg:w-72 shrink-0 glass rounded-2xl p-4 overflow-y-auto max-h-[80vh] flex flex-col gap-4">
-				<!-- Actions -->
-				<div class="flex gap-2">
+				<div class="flex gap-2 flex-wrap">
 					<button
-						on:click={() => favorites.toggle(post.id)}
+						on:click={toggleFavorite}
 						class="flex-1 flex items-center justify-center gap-2 py-2 rounded-full text-sm font-medium transition-all duration-200 border
-							{isFavorited
-							? 'bg-pink-mid/20 text-pink-mid border-pink-mid/40'
-							: 'bg-transparent text-pink-soft/60 border-pink-soft/20 hover:border-pink-mid/30 hover:text-pink-mid'}"
-					>
-						{isFavorited ? '♥ Saved' : '♡ Save'}
-					</button>
-					<a
-						href={getDanbooruUrl(post.id)}
-						target="_blank"
-						rel="noopener noreferrer"
-						class="flex items-center justify-center px-3 py-2 rounded-full glass text-pink-soft/60 hover:text-pink-mid text-sm transition-colors border border-pink-soft/10 hover:border-pink-mid/30"
-						title="View on Danbooru"
-					>
-						↗
-					</a>
-					<a
-						href={post.file_url}
-						target="_blank"
-						rel="noopener noreferrer"
-						download
-						class="flex items-center justify-center px-3 py-2 rounded-full glass text-pink-soft/60 hover:text-pink-mid text-sm transition-colors border border-pink-soft/10 hover:border-pink-mid/30"
-						title="Download"
-					>
-						⬇
-					</a>
+							{isFavorited ? 'bg-pink-mid/20 text-pink-mid border-pink-mid/40' : 'bg-transparent text-pink-soft/60 border-pink-soft/20 hover:border-pink-mid/30 hover:text-pink-mid'}"
+					>{isFavorited ? '♥ Saved' : '♡ Save'}</button>
+
+					<button on:click={toggleSlideshow} class="flex items-center justify-center px-3 py-2 rounded-full glass text-sm transition-colors border {slideshowActive ? 'text-purple-soft border-purple-mid/40 bg-purple-mid/20' : 'text-pink-soft/60 border-pink-soft/10 hover:border-purple-mid/30 hover:text-purple-soft'}" title="Slideshow">{slideshowActive ? '⏹' : '▶'}</button>
+
+					<button on:click={copyLink} class="flex items-center justify-center px-3 py-2 rounded-full glass text-pink-soft/60 hover:text-pink-mid text-sm transition-colors border border-pink-soft/10 hover:border-pink-mid/30" title="Copy link">⎘</button>
+
+					<a href={getDanbooruUrl(post.id)} target="_blank" rel="noopener noreferrer" class="flex items-center justify-center px-3 py-2 rounded-full glass text-pink-soft/60 hover:text-pink-mid text-sm transition-colors border border-pink-soft/10 hover:border-pink-mid/30" title="View on Danbooru">↗</a>
+
+					<a href={post.file_url} target="_blank" rel="noopener noreferrer" download class="flex items-center justify-center px-3 py-2 rounded-full glass text-pink-soft/60 hover:text-pink-mid text-sm transition-colors border border-pink-soft/10 hover:border-pink-mid/30" title="Download">⬇</a>
 				</div>
 
-				<!-- Infos -->
 				<div class="text-xs text-pink-soft/40 space-y-1">
 					<div>ID: <span class="text-pink-soft/60">#{post.id}</span></div>
 					<div>Resolution: <span class="text-pink-soft/60">{post.image_width} × {post.image_height}</span></div>
 					<div>Score: <span class="text-pink-soft/60">⭐ {post.score}</span></div>
 				</div>
 
-				<!-- Artists -->
 				{#if artists.length > 0}
 					<div>
 						<p class="text-xs font-medium text-pink-mid/80 uppercase tracking-wider mb-2">Artist</p>
 						<div class="flex flex-wrap gap-1.5">
 							{#each artists as tag}
-								<button on:click={() => addTagSearch(tag)} class="tag-badge-artist">
-									{tag.replace(/_/g, ' ')}
-								</button>
+								<button on:click={() => addTagSearch(tag)} class="tag-badge-artist">{tag.replace(/_/g, ' ')}</button>
 							{/each}
 						</div>
 					</div>
 				{/if}
 
-				<!-- Characters -->
 				{#if characters.length > 0}
 					<div>
 						<p class="text-xs font-medium text-purple-soft/80 uppercase tracking-wider mb-2">Characters</p>
 						<div class="flex flex-wrap gap-1.5">
 							{#each characters as tag}
-								<button on:click={() => addTagSearch(tag)} class="tag-badge-character">
-									{tag.replace(/_/g, ' ')}
-								</button>
+								<button on:click={() => addTagSearch(tag)} class="tag-badge-character">{tag.replace(/_/g, ' ')}</button>
 							{/each}
 						</div>
 					</div>
 				{/if}
 
-				<!-- General tags -->
 				{#if generalTags.length > 0}
 					<div>
 						<p class="text-xs font-medium text-purple-mid/80 uppercase tracking-wider mb-2">General Tags</p>
 						<div class="flex flex-wrap gap-1.5">
 							{#each generalTags as tag}
-								<button on:click={() => addTagSearch(tag)} class="tag-badge-general">
-									{tag.replace(/_/g, ' ')}
-								</button>
+								<button on:click={() => addTagSearch(tag)} class="tag-badge-general">{tag.replace(/_/g, ' ')}</button>
 							{/each}
 						</div>
 					</div>

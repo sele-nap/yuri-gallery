@@ -10,7 +10,6 @@ function createFavoritesStore() {
 
 	const { subscribe, update, set } = writable(/** @type {number[]} */ (initial));
 
-	/** @param {number} id */
 	function toggle(id) {
 		update((ids) => {
 			const next = ids.includes(id) ? ids.filter((i) => i !== id) : [...ids, id];
@@ -19,7 +18,6 @@ function createFavoritesStore() {
 		});
 	}
 
-	/** @param {number} id */
 	function has(id) {
 		let result = false;
 		subscribe((ids) => (result = ids.includes(id)))();

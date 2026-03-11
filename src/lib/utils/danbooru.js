@@ -18,13 +18,6 @@ const LIMIT = 24;
  * @property {string} file_ext
  */
 
-/**
- * Fetch posts from Danbooru
- * @param {Object} opts
- * @param {number} opts.page
- * @param {string} [opts.tags]
- * @returns {Promise<DanbooruPost[]>}
- */
 export async function fetchPosts({ page = 1, tags = '' } = {}) {
 	const queryTags = tags ? `yuri ${tags}` : DEFAULT_TAGS;
 	const url = new URL(`${BASE_URL}/posts.json`);
@@ -35,10 +28,7 @@ export async function fetchPosts({ page = 1, tags = '' } = {}) {
 	const res = await fetch(url.toString());
 	if (!res.ok) throw new Error(`Danbooru API error: ${res.status}`);
 
-	/** @type {DanbooruPost[]} */
-	const data = await res.json();
-
-	// Filter out deleted/unavailable posts and non-image files
+	const data = /** @type {DanbooruPost[]} */ (await res.json());
 	return data.filter(
 		(p) =>
 			p.file_url &&
@@ -47,10 +37,6 @@ export async function fetchPosts({ page = 1, tags = '' } = {}) {
 	);
 }
 
-/**
- * Get top yuri tags for the filter panel
- * @returns {Promise<Array<{name: string, count: number}>>}
- */
 export async function fetchPopularTags() {
 	const url = new URL(`${BASE_URL}/tags.json`);
 	url.searchParams.set('search[category]', '0');
@@ -67,15 +53,10 @@ export async function fetchPopularTags() {
 	}
 }
 
-/** @param {number} postId */
 export function getDanbooruUrl(postId) {
 	return `${BASE_URL}/posts/${postId}`;
 }
 
-/**
- * Parse tag string to array
- * @param {string} tagString
- */
 export function parseTags(tagString) {
 	return tagString ? tagString.split(' ').filter(Boolean) : [];
 }

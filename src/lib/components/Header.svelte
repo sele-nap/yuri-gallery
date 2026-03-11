@@ -1,10 +1,22 @@
 <script>
-	import { showFavoritesOnly, activeSearch } from '$lib/stores/gallery.js';
+	import { showFavoritesOnly, activeSearch, activeSort } from '$lib/stores/gallery.js';
 	import { favorites } from '$lib/stores/favorites.js';
 
-	/** @type {string} */
+	/** @type {number} */
+	export let imageCount = 0;
+
 	let searchInput = '';
 	let debounceTimer;
+	let sortOpen = false;
+
+	const SORT_OPTIONS = [
+		{ label: 'Latest', value: '' },
+		{ label: 'Top rated', value: 'order:score' },
+		{ label: 'Random', value: 'order:random' },
+		{ label: 'Oldest', value: 'order:id_asc' }
+	];
+
+	$: currentSortLabel = SORT_OPTIONS.find((o) => o.value === $activeSort)?.label ?? 'Latest';
 
 	function handleSearch() {
 		clearTimeout(debounceTimer);
@@ -17,19 +29,26 @@
 		searchInput = '';
 		activeSearch.set('');
 	}
+
+	/** @param {string} value */
+	function setSort(value) {
+		activeSort.set(value);
+		sortOpen = false;
+	}
 </script>
 
 <header class="glass sticky top-0 z-40 px-4 py-3">
 	<div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center gap-3">
-		<!-- Logo -->
 		<a href="/" class="flex items-center gap-2 shrink-0 group">
 			<span class="text-2xl font-display italic text-pink-mid group-hover:text-pink-bright transition-colors">
 				百合
 			</span>
 			<span class="text-lg font-display text-pink-soft/80">Gallery</span>
+			{#if imageCount > 0}
+				<span class="text-xs text-pink-soft/30 font-body hidden sm:inline">{imageCount} images</span>
+			{/if}
 		</a>
 
-		<!-- Search -->
 		<div class="flex-1 w-full sm:max-w-md relative">
 			<input
 				type="text"
@@ -49,8 +68,42 @@
 			{/if}
 		</div>
 
-		<!-- Actions -->
 		<div class="flex items-center gap-2 shrink-0">
+			<div class="relative">
+				<button
+					on:click={() => (sortOpen = !sortOpen)}
+					class="flex items-center gap-1.5 px-3 py-2 rounded-full text-sm font-medium transition-all duration-200 border
+						{$activeSort
+						? 'bg-purple-mid/20 text-purple-soft border-purple-mid/40'
+						: 'bg-transparent text-pink-soft/60 border-pink-soft/20 hover:border-purple-mid/30 hover:text-pink-soft'}"
+					title="Sort"
+				>
+					<span class="text-xs">⇅</span>
+					<span class="hidden sm:inline text-xs">{currentSortLabel}</span>
+				</button>
+
+				{#if sortOpen}
+					<!-- svelte-ignore a11y-click-events-have-key-events a11y-no-static-element-interactions -->
+					<div
+						class="fixed inset-0 z-40"
+						on:click={() => (sortOpen = false)}
+					></div>
+					<div class="absolute right-0 top-full mt-2 z-50 glass rounded-xl overflow-hidden border border-purple-mid/20 w-36 animate-slide-up">
+						{#each SORT_OPTIONS as opt}
+							<button
+								on:click={() => setSort(opt.value)}
+								class="w-full text-left px-3 py-2 text-sm transition-colors
+									{$activeSort === opt.value
+									? 'text-purple-soft bg-purple-mid/20'
+									: 'text-pink-soft/60 hover:text-pink-soft hover:bg-purple-mid/10'}"
+							>
+								{opt.label}
+							</button>
+						{/each}
+					</div>
+				{/if}
+			</div>
+
 			<button
 				on:click={() => showFavoritesOnly.update((v) => !v)}
 				class="flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 border

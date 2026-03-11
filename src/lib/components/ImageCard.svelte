@@ -1,6 +1,7 @@
 <script>
 	import { lightboxPost } from '$lib/stores/gallery.js';
 	import { favorites } from '$lib/stores/favorites.js';
+	import { toast } from '$lib/stores/toast.js';
 	import { parseTags, getDanbooruUrl } from '$lib/utils/danbooru.js';
 
 	/** @type {import('../utils/danbooru').DanbooruPost} */
@@ -15,6 +16,7 @@
 	function toggleFavorite(e) {
 		e.stopPropagation();
 		favorites.toggle(post.id);
+		toast.add(isFavorited ? 'Removed from favorites' : 'Added to favorites ♥');
 	}
 
 	function openLightbox() {
@@ -27,7 +29,6 @@
 		on:click={openLightbox}
 		class="block w-full rounded-xl overflow-hidden relative cursor-zoom-in ring-0 hover:ring-2 ring-pink-mid/60 transition-all duration-300 focus:outline-none focus:ring-2"
 	>
-		<!-- Skeleton while loading -->
 		{#if !loaded && !error}
 			<div class="w-full bg-bg-card" style="aspect-ratio: {post.image_width}/{post.image_height}; min-height: 120px;">
 				<div class="absolute inset-0 overflow-hidden">
@@ -36,7 +37,6 @@
 			</div>
 		{/if}
 
-		<!-- Image -->
 		{#if !error}
 			<img
 				src={post.large_file_url}
@@ -54,17 +54,14 @@
 			</div>
 		{/if}
 
-		<!-- Overlay on hover -->
 		<div class="absolute inset-0 bg-gradient-to-t from-bg-primary/90 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl">
 			<div class="absolute bottom-0 left-0 right-0 p-3">
-				<!-- Artists -->
 				{#if artists.length > 0}
 					<p class="text-pink-mid text-xs font-medium mb-1 truncate">
 						{artists.join(', ')}
 					</p>
 				{/if}
 
-				<!-- Score -->
 				<div class="flex items-center justify-between">
 					<span class="text-pink-soft/60 text-xs">⭐ {post.score}</span>
 					<a
@@ -81,7 +78,6 @@
 		</div>
 	</button>
 
-	<!-- Favorite button -->
 	<button
 		on:click={toggleFavorite}
 		class="absolute top-2 right-2 w-8 h-8 rounded-full flex items-center justify-center transition-all duration-200 z-10
