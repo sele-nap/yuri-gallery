@@ -35,7 +35,7 @@
 				type="text"
 				bind:value={searchInput}
 				on:input={handleSearch}
-				placeholder="Search tags… (e.g. school_uniform)"
+				placeholder="Search tags… (e.g. cherry_blossoms)"
 				class="w-full bg-bg-primary/60 border border-purple-mid/30 rounded-full px-4 py-2 text-sm text-pink-soft placeholder:text-pink-soft/30 focus:outline-none focus:border-pink-mid/60 transition-colors pr-8"
 			/>
 			{#if searchInput}
