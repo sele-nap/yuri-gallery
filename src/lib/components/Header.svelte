@@ -30,6 +30,13 @@
 		activeSearch.set('');
 	}
 
+	function goHome() {
+		searchInput = '';
+		activeSearch.set('');
+		activeSort.set('');
+		showFavoritesOnly.set(false);
+	}
+
 	/** @param {string} value */
 	function setSort(value) {
 		activeSort.set(value);
@@ -39,7 +46,7 @@
 
 <header class="glass sticky top-0 z-40 px-4 py-3">
 	<div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center gap-3">
-		<a href="/" class="flex items-center gap-2 shrink-0 group">
+		<a href="/" on:click={goHome} class="flex items-center gap-2 shrink-0 group">
 			<span class="text-2xl font-display italic text-pink-mid group-hover:text-pink-bright transition-colors">
 				百合
 			</span>
