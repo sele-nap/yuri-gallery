@@ -39,7 +39,7 @@
 		<!-- Image -->
 		{#if !error}
 			<img
-				src={post.preview_file_url}
+				src={post.large_file_url}
 				alt="Yuri artwork"
 				loading="lazy"
 				class="w-full h-auto block transition-all duration-500 group-hover:scale-[1.02]"
