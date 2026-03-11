@@ -8,12 +8,17 @@
 	import Toast from '$lib/components/Toast.svelte';
 	import BackToTop from '$lib/components/BackToTop.svelte';
 	import KeyboardShortcuts from '$lib/components/KeyboardShortcuts.svelte';
+	import { Heart } from 'lucide-svelte';
 	import { fetchPosts } from '$lib/utils/danbooru.js';
 	import { activeSearch, activeSort, showFavoritesOnly } from '$lib/stores/gallery.js';
 	import { favorites } from '$lib/stores/favorites.js';
 
 	/** @type {import('../lib/utils/danbooru').DanbooruPost[]} */
 	let posts = [];
+	/** @type {import('../lib/utils/danbooru').DanbooruPost[][]} */
+	let columns = [[], []];
+	let colCount = 2;
+	let nextColIdx = 0;
 	let page = 1;
 	let loading = false;
 	let hasMore = true;
@@ -22,15 +27,55 @@
 
 	/** @type {IntersectionObserver | null} */
 	let observer = null;
+	let resizeTimeout;
 
 	$: currentSearch = $activeSearch;
 	$: currentSort = $activeSort;
 	$: onlyFavorites = $showFavoritesOnly;
 	$: favoritedIds = $favorites;
 
-	$: displayedPosts = onlyFavorites
-		? posts.filter((p) => favoritedIds.includes(p.id))
-		: posts;
+	// In favorites mode, derive columns reactively from filtered posts
+	$: displayedColumns = onlyFavorites
+		? distributeToColumns(posts.filter((p) => favoritedIds.includes(p.id)), colCount)
+		: columns;
+
+	function getColCount() {
+		if (typeof window === 'undefined') return 2;
+		const w = window.innerWidth;
+		if (w >= 1280) return 5;
+		if (w >= 1024) return 4;
+		if (w >= 640) return 3;
+		return 2;
+	}
+
+	/** @param {import('../lib/utils/danbooru').DanbooruPost[]} items @param {number} n */
+	function distributeToColumns(items, n) {
+		const cols = Array.from({ length: n }, () => []);
+		items.forEach((item, i) => { cols[i % n].push(item); });
+		return cols;
+	}
+
+	/** @param {import('../lib/utils/danbooru').DanbooruPost[]} newPosts */
+	function appendToColumns(newPosts) {
+		const newCols = columns.map((c) => [...c]);
+		for (const post of newPosts) {
+			newCols[nextColIdx % colCount].push(post);
+			nextColIdx++;
+		}
+		columns = newCols;
+	}
+
+	function handleResize() {
+		clearTimeout(resizeTimeout);
+		resizeTimeout = setTimeout(() => {
+			const n = getColCount();
+			if (n !== colCount) {
+				colCount = n;
+				columns = distributeToColumns(posts, n);
+				nextColIdx = posts.length;
+			}
+		}, 150);
+	}
 
 	$: {
 		currentSearch;
@@ -43,6 +88,9 @@
 		page = 1;
 		hasMore = true;
 		error = '';
+		colCount = getColCount();
+		columns = Array.from({ length: colCount }, () => []);
+		nextColIdx = 0;
 		await loadMore();
 	}
 
@@ -58,6 +106,9 @@
 				hasMore = false;
 			} else {
 				posts = [...posts, ...newPosts];
+				if (!onlyFavorites) {
+					appendToColumns(newPosts);
+				}
 				page += 1;
 			}
 		} catch (e) {
@@ -68,6 +119,19 @@
 	}
 
 	onMount(() => {
+		const n = getColCount();
+		if (n !== colCount) {
+			colCount = n;
+			if (posts.length > 0) {
+				columns = distributeToColumns(posts, n);
+				nextColIdx = posts.length;
+			} else {
+				columns = Array.from({ length: n }, () => []);
+			}
+		}
+
+		window.addEventListener('resize', handleResize);
+
 		observer = new IntersectionObserver(
 			(entries) => {
 				if (entries[0].isIntersecting && !loading && hasMore) {
@@ -79,7 +143,13 @@
 		if (sentinel) observer.observe(sentinel);
 	});
 
-	onDestroy(() => observer?.disconnect());
+	onDestroy(() => {
+		observer?.disconnect();
+		clearTimeout(resizeTimeout);
+		if (typeof window !== 'undefined') {
+			window.removeEventListener('resize', handleResize);
+		}
+	});
 
 	$: if (sentinel && observer) {
 		observer.observe(sentinel);
@@ -94,9 +164,9 @@
 <TagFilter />
 
 <main class="max-w-7xl mx-auto px-3 pb-16">
-	{#if onlyFavorites && displayedPosts.length === 0 && !loading}
+	{#if onlyFavorites && displayedColumns.every((c) => c.length === 0) && !loading}
 		<div class="flex flex-col items-center justify-center py-24 gap-4 animate-slide-up">
-			<p class="text-6xl">♡</p>
+			<p class="text-pink-soft/20"><Heart size={60} /></p>
 			<p class="text-pink-soft/40 text-center">
 				No favorites yet.<br />
 				<span class="text-pink-soft/20 text-sm">Click ♡ on any image to save it here.</span>
@@ -111,15 +181,17 @@
 
 	{:else}
 		<div class="masonry">
-			{#each displayedPosts as post (post.id)}
-				<ImageCard {post} />
+			{#each displayedColumns as column}
+				<div class="masonry-col">
+					{#each column as post (post.id)}
+						<ImageCard {post} />
+					{/each}
+					{#if loading}
+						<SkeletonCard />
+						<SkeletonCard />
+					{/if}
+				</div>
 			{/each}
-
-			{#if loading}
-				{#each Array(8) as _, i}
-					<SkeletonCard />
-				{/each}
-			{/if}
 		</div>
 
 		{#if error}

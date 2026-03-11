@@ -1,4 +1,5 @@
 <script>
+	import { Heart, Play, Square, Copy, ExternalLink, Download, ChevronLeft, ChevronRight, X, Star } from 'lucide-svelte';
 	import { lightboxPost, activeSearch } from '$lib/stores/gallery.js';
 	import { favorites } from '$lib/stores/favorites.js';
 	import { toast } from '$lib/stores/toast.js';
@@ -55,7 +56,7 @@
 	function toggleFavorite() {
 		if (!post) return;
 		favorites.toggle(post.id);
-		toast.add(isFavorited ? 'Removed from favorites' : 'Added to favorites ♥');
+		toast.add(isFavorited ? 'Removed from favorites' : 'Added to favorites');
 	}
 
 	async function copyLink() {
@@ -87,31 +88,50 @@
 {#if post}
 	<!-- svelte-ignore a11y-click-events-have-key-events a11y-no-noninteractive-element-interactions -->
 	<div
-		class="fixed inset-0 z-50 bg-bg-primary/95 backdrop-blur-md flex items-center justify-center p-4"
+		class="fixed inset-0 z-[60] bg-bg-primary/95 backdrop-blur-md flex items-center justify-center p-4"
 		on:click|self={close}
 		role="dialog"
 		aria-modal="true"
 		tabindex="-1"
 	>
-		<button on:click={close} class="absolute top-4 right-4 w-10 h-10 rounded-full glass flex items-center justify-center text-pink-soft/60 hover:text-pink-mid transition-colors z-10" aria-label="Close">✕</button>
+		<button
+			on:click={close}
+			class="absolute top-4 right-4 w-10 h-10 rounded-full glass flex items-center justify-center text-pink-soft/60 hover:text-pink-mid transition-colors z-10"
+			aria-label="Close"
+		>
+			<X size={18} />
+		</button>
 
-		{#if currentIndex > 0}
-			<button on:click={prev} class="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full glass flex items-center justify-center text-pink-soft/60 hover:text-pink-mid transition-colors z-10" aria-label="Previous">←</button>
-		{/if}
-		{#if currentIndex < posts.length - 1}
-			<button on:click={next} class="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full glass flex items-center justify-center text-pink-soft/60 hover:text-pink-mid transition-colors z-10" aria-label="Next">→</button>
-		{/if}
-
-		<div class="flex flex-col lg:flex-row gap-4 max-h-[90vh] w-full max-w-6xl animate-slide-up">
+		<div class="flex flex-col lg:flex-row gap-4 max-h-[90vh] w-full max-w-6xl animate-slide-up overflow-y-auto lg:overflow-visible">
 			<!-- Image -->
 			<div class="flex-1 flex items-center justify-center min-h-0 relative">
+				<!-- Nav arrows inside image container, won't conflict with close button -->
+				{#if currentIndex > 0}
+					<button
+						on:click={prev}
+						class="absolute left-2 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full glass flex items-center justify-center text-pink-soft/60 hover:text-pink-mid transition-colors z-10"
+						aria-label="Previous"
+					>
+						<ChevronLeft size={20} />
+					</button>
+				{/if}
+				{#if currentIndex < posts.length - 1}
+					<button
+						on:click={next}
+						class="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full glass flex items-center justify-center text-pink-soft/60 hover:text-pink-mid transition-colors z-10"
+						aria-label="Next"
+					>
+						<ChevronRight size={20} />
+					</button>
+				{/if}
+
 				{#if !imageLoaded}
-					<div class="w-full max-h-[80vh] aspect-square bg-bg-card rounded-2xl animate-pulse"></div>
+					<div class="w-full max-h-[50vh] lg:max-h-[80vh] aspect-square bg-bg-card rounded-2xl animate-pulse"></div>
 				{/if}
 				<img
 					src={post.large_file_url}
 					alt="Yuri artwork"
-					class="max-w-full max-h-[80vh] object-contain rounded-2xl shadow-2xl transition-opacity duration-300"
+					class="max-w-full max-h-[50vh] md:max-h-[65vh] lg:max-h-[80vh] object-contain rounded-2xl shadow-2xl transition-opacity duration-300"
 					class:opacity-0={!imageLoaded}
 					class:opacity-100={imageLoaded}
 					on:load={() => (imageLoaded = true)}
@@ -125,27 +145,65 @@
 			</div>
 
 			<!-- Sidebar -->
-			<div class="lg:w-72 shrink-0 glass rounded-2xl p-4 overflow-y-auto max-h-[80vh] flex flex-col gap-4">
-				<div class="flex gap-2 flex-wrap">
+			<div class="lg:w-72 shrink-0 glass rounded-2xl p-4 overflow-y-auto max-h-[40vh] lg:max-h-[80vh] flex flex-col gap-4">
+				<button
+					on:click={toggleFavorite}
+					class="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-full text-sm font-medium transition-all duration-200 border
+						{isFavorited ? 'bg-pink-mid/20 text-pink-mid border-pink-mid/40' : 'bg-transparent text-pink-soft/60 border-pink-soft/20 hover:border-pink-mid/30 hover:text-pink-mid'}"
+				>
+					<Heart size={14} fill={isFavorited ? 'currentColor' : 'none'} />
+					{isFavorited ? 'Saved' : 'Save'}
+				</button>
+
+				<div class="flex gap-2">
 					<button
-						on:click={toggleFavorite}
-						class="flex-1 flex items-center justify-center gap-2 py-2 rounded-full text-sm font-medium transition-all duration-200 border
-							{isFavorited ? 'bg-pink-mid/20 text-pink-mid border-pink-mid/40' : 'bg-transparent text-pink-soft/60 border-pink-soft/20 hover:border-pink-mid/30 hover:text-pink-mid'}"
-					>{isFavorited ? '♥ Saved' : '♡ Save'}</button>
+						on:click={toggleSlideshow}
+						class="flex items-center justify-center px-3 py-2 rounded-full glass text-sm transition-colors border {slideshowActive ? 'text-purple-soft border-purple-mid/40 bg-purple-mid/20' : 'text-pink-soft/60 border-pink-soft/10 hover:border-purple-mid/30 hover:text-purple-soft'}"
+						title="Slideshow"
+					>
+						{#if slideshowActive}<Square size={14} />{:else}<Play size={14} />{/if}
+					</button>
 
-					<button on:click={toggleSlideshow} class="flex items-center justify-center px-3 py-2 rounded-full glass text-sm transition-colors border {slideshowActive ? 'text-purple-soft border-purple-mid/40 bg-purple-mid/20' : 'text-pink-soft/60 border-pink-soft/10 hover:border-purple-mid/30 hover:text-purple-soft'}" title="Slideshow">{slideshowActive ? '⏹' : '▶'}</button>
+					<button
+						on:click={copyLink}
+						class="flex items-center justify-center px-3 py-2 rounded-full glass text-pink-soft/60 hover:text-pink-mid text-sm transition-colors border border-pink-soft/10 hover:border-pink-mid/30"
+						title="Copy link"
+					>
+						<Copy size={14} />
+					</button>
 
-					<button on:click={copyLink} class="flex items-center justify-center px-3 py-2 rounded-full glass text-pink-soft/60 hover:text-pink-mid text-sm transition-colors border border-pink-soft/10 hover:border-pink-mid/30" title="Copy link">⎘</button>
+					<a
+						href={getDanbooruUrl(post.id)}
+						target="_blank"
+						rel="noopener noreferrer"
+						class="flex items-center justify-center px-3 py-2 rounded-full glass text-pink-soft/60 hover:text-pink-mid text-sm transition-colors border border-pink-soft/10 hover:border-pink-mid/30"
+						title="View on Danbooru"
+					>
+						<ExternalLink size={14} />
+					</a>
 
-					<a href={getDanbooruUrl(post.id)} target="_blank" rel="noopener noreferrer" class="flex items-center justify-center px-3 py-2 rounded-full glass text-pink-soft/60 hover:text-pink-mid text-sm transition-colors border border-pink-soft/10 hover:border-pink-mid/30" title="View on Danbooru">↗</a>
-
-					<a href={post.file_url} target="_blank" rel="noopener noreferrer" download class="flex items-center justify-center px-3 py-2 rounded-full glass text-pink-soft/60 hover:text-pink-mid text-sm transition-colors border border-pink-soft/10 hover:border-pink-mid/30" title="Download">⬇</a>
+					<a
+						href={post.file_url}
+						target="_blank"
+						rel="noopener noreferrer"
+						download
+						class="flex items-center justify-center px-3 py-2 rounded-full glass text-pink-soft/60 hover:text-pink-mid text-sm transition-colors border border-pink-soft/10 hover:border-pink-mid/30"
+						title="Download"
+					>
+						<Download size={14} />
+					</a>
 				</div>
 
 				<div class="text-xs text-pink-soft/40 space-y-1">
 					<div>ID: <span class="text-pink-soft/60">#{post.id}</span></div>
 					<div>Resolution: <span class="text-pink-soft/60">{post.image_width} × {post.image_height}</span></div>
-					<div>Score: <span class="text-pink-soft/60">⭐ {post.score}</span></div>
+					<div class="flex items-center gap-1">
+						Score:
+						<span class="text-pink-soft/60 flex items-center gap-1">
+							<Star size={10} fill="currentColor" />
+							{post.score}
+						</span>
+					</div>
 				</div>
 
 				{#if artists.length > 0}

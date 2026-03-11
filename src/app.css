@@ -36,31 +36,21 @@
 
 @layer components {
 	.masonry {
-		columns: 2;
-		column-gap: 0.75rem;
+		display: flex;
+		align-items: flex-start;
+		gap: 0.75rem;
 	}
 
-	@media (min-width: 640px) {
-		.masonry {
-			columns: 3;
-		}
-	}
-
-	@media (min-width: 1024px) {
-		.masonry {
-			columns: 4;
-		}
-	}
-
-	@media (min-width: 1280px) {
-		.masonry {
-			columns: 5;
-		}
+	.masonry-col {
+		flex: 1;
+		display: flex;
+		flex-direction: column;
+		gap: 0.75rem;
+		min-width: 0;
 	}
 
 	.masonry-item {
-		break-inside: avoid;
-		margin-bottom: 0.75rem;
+		width: 100%;
 	}
 
 	.tag-badge {

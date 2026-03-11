@@ -1,4 +1,5 @@
 <script>
+	import { Heart, ArrowUpDown, X } from 'lucide-svelte';
 	import { showFavoritesOnly, activeSearch, activeSort } from '$lib/stores/gallery.js';
 	import { favorites } from '$lib/stores/favorites.js';
 
@@ -70,7 +71,7 @@
 					class="absolute right-3 top-1/2 -translate-y-1/2 text-pink-soft/40 hover:text-pink-mid transition-colors"
 					aria-label="Clear search"
 				>
-					✕
+					<X size={14} />
 				</button>
 			{/if}
 		</div>
@@ -85,7 +86,7 @@
 						: 'bg-transparent text-pink-soft/60 border-pink-soft/20 hover:border-purple-mid/30 hover:text-pink-soft'}"
 					title="Sort"
 				>
-					<span class="text-xs">⇅</span>
+					<ArrowUpDown size={14} />
 					<span class="hidden sm:inline text-xs">{currentSortLabel}</span>
 				</button>
 
@@ -119,7 +120,7 @@
 					: 'bg-transparent text-pink-soft/60 border-pink-soft/20 hover:border-pink-mid/30 hover:text-pink-soft'}"
 				title="My favorites"
 			>
-				<span class="text-base">{$showFavoritesOnly ? '♥' : '♡'}</span>
+				<Heart size={16} fill={$showFavoritesOnly ? 'currentColor' : 'none'} />
 				<span class="hidden sm:inline">Favorites</span>
 				{#if $favorites.length > 0}
 					<span class="bg-pink-mid text-white text-xs rounded-full w-4 h-4 flex items-center justify-center font-bold">
