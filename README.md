@@ -4,16 +4,12 @@ A yuri image gallery powered by the [Danbooru](https://danbooru.donmai.us) publi
 
 ## Features
 
-- **Infinite scroll** — images load automatically as you scroll
-- **Masonry grid** — dynamic layout with fade-in animations
-- **Lightbox** — click any image to open a full view with tags, resolution, and score
-- **Search** — filter by any Danbooru tag
-- **Quick filters** — preset tag buttons (Kiss, Hug, School, Rain…)
-- **Sort** — by latest, top rated, random, or oldest
-- **Favorites** — save images locally (persisted in `localStorage`)
-- **Slideshow** — auto-advance images in the lightbox every 3 seconds
-- **Copy link** — copy a Danbooru post URL to clipboard
-- **Keyboard shortcuts** — `←` `→` navigate, `Esc` close, `F` toggle favorite, `?` show shortcuts
+- **Infinite scroll** — stable masonry columns, no position shifts on new batches
+- **Lightbox** — full view with tags, resolution, score, slideshow, and download
+- **Search & filters** — by tag, quick presets, and sort order
+- **Favorites** — persisted in `localStorage`
+- **Keyboard shortcuts** — `←` `→` navigate, `Esc` close, `F` favorite, `?` help
+- **Responsive** — 2 to 5 columns depending on screen width
 
 ## Stack
 
