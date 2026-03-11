@@ -1,0 +1,81 @@
+const BASE_URL = 'https://danbooru.donmai.us';
+const DEFAULT_TAGS = 'yuri rating:s';
+const LIMIT = 24;
+
+/**
+ * @typedef {Object} DanbooruPost
+ * @property {number} id
+ * @property {string} file_url
+ * @property {string} large_file_url
+ * @property {string} preview_file_url
+ * @property {number} image_width
+ * @property {number} image_height
+ * @property {string} tag_string_artist
+ * @property {string} tag_string_character
+ * @property {string} tag_string_general
+ * @property {string} rating
+ * @property {number} score
+ * @property {string} file_ext
+ */
+
+/**
+ * Fetch posts from Danbooru
+ * @param {Object} opts
+ * @param {number} opts.page
+ * @param {string} [opts.tags]
+ * @returns {Promise<DanbooruPost[]>}
+ */
+export async function fetchPosts({ page = 1, tags = '' } = {}) {
+	const queryTags = tags ? `yuri ${tags}` : DEFAULT_TAGS;
+	const url = new URL(`${BASE_URL}/posts.json`);
+	url.searchParams.set('tags', queryTags);
+	url.searchParams.set('limit', String(LIMIT));
+	url.searchParams.set('page', String(page));
+
+	const res = await fetch(url.toString());
+	if (!res.ok) throw new Error(`Danbooru API error: ${res.status}`);
+
+	/** @type {DanbooruPost[]} */
+	const data = await res.json();
+
+	// Filter out deleted/unavailable posts and non-image files
+	return data.filter(
+		(p) =>
+			p.file_url &&
+			p.large_file_url &&
+			['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(p.file_ext)
+	);
+}
+
+/**
+ * Get top yuri tags for the filter panel
+ * @returns {Promise<Array<{name: string, count: number}>>}
+ */
+export async function fetchPopularTags() {
+	const url = new URL(`${BASE_URL}/tags.json`);
+	url.searchParams.set('search[category]', '0');
+	url.searchParams.set('search[name_matches]', 'yuri*');
+	url.searchParams.set('search[order]', 'count');
+	url.searchParams.set('limit', '12');
+
+	try {
+		const res = await fetch(url.toString());
+		if (!res.ok) return [];
+		return await res.json();
+	} catch {
+		return [];
+	}
+}
+
+/** @param {number} postId */
+export function getDanbooruUrl(postId) {
+	return `${BASE_URL}/posts/${postId}`;
+}
+
+/**
+ * Parse tag string to array
+ * @param {string} tagString
+ */
+export function parseTags(tagString) {
+	return tagString ? tagString.split(' ').filter(Boolean) : [];
+}

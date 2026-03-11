@@ -1,0 +1,92 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+	* {
+		box-sizing: border-box;
+	}
+
+	html {
+		scroll-behavior: smooth;
+	}
+
+	::-webkit-scrollbar {
+		width: 6px;
+	}
+
+	::-webkit-scrollbar-track {
+		background: #0d0d14;
+	}
+
+	::-webkit-scrollbar-thumb {
+		background: #9b5de5;
+		border-radius: 3px;
+	}
+
+	::-webkit-scrollbar-thumb:hover {
+		background: #e879a0;
+	}
+
+	::selection {
+		background: #e879a0;
+		color: #0d0d14;
+	}
+}
+
+@layer components {
+	.masonry {
+		columns: 2;
+		column-gap: 0.75rem;
+	}
+
+	@media (min-width: 640px) {
+		.masonry {
+			columns: 3;
+		}
+	}
+
+	@media (min-width: 1024px) {
+		.masonry {
+			columns: 4;
+		}
+	}
+
+	@media (min-width: 1280px) {
+		.masonry {
+			columns: 5;
+		}
+	}
+
+	.masonry-item {
+		break-inside: avoid;
+		margin-bottom: 0.75rem;
+	}
+
+	.tag-badge {
+		@apply inline-block px-2 py-0.5 rounded-full text-xs font-medium cursor-pointer transition-all duration-200;
+	}
+
+	.tag-badge-artist {
+		@apply tag-badge bg-pink-mid/20 text-pink-mid hover:bg-pink-mid/40 border border-pink-mid/30;
+	}
+
+	.tag-badge-general {
+		@apply tag-badge bg-purple-mid/20 text-purple-soft hover:bg-purple-mid/40 border border-purple-mid/30;
+	}
+
+	.tag-badge-character {
+		@apply tag-badge bg-pink-soft/10 text-pink-soft hover:bg-pink-soft/20 border border-pink-soft/20;
+	}
+
+	.btn-primary {
+		@apply px-5 py-2 rounded-full bg-gradient-to-r from-pink-mid to-purple-mid text-white font-medium text-sm transition-all duration-200 hover:opacity-90 hover:scale-105 active:scale-95;
+	}
+
+	.glass {
+		background: rgba(26, 26, 46, 0.8);
+		backdrop-filter: blur(12px);
+		-webkit-backdrop-filter: blur(12px);
+		border: 1px solid rgba(232, 121, 160, 0.15);
+	}
+}
