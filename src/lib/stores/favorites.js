@@ -22,18 +22,12 @@ function createFavoritesStore() {
     });
   }
 
-  function has(id) {
-    let result = false;
-    subscribe((ids) => (result = ids.includes(id)))();
-    return result;
-  }
-
   function clear() {
     set([]);
     if (browser) localStorage.removeItem(STORAGE_KEY);
   }
 
-  return { subscribe, toggle, has, clear };
+  return { subscribe, toggle, clear };
 }
 
 export const favorites = createFavoritesStore();

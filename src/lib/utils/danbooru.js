@@ -37,26 +37,15 @@ export async function fetchPosts({ page = 1, tags = '' } = {}) {
   );
 }
 
-export async function fetchPopularTags() {
-  const url = new URL(`${BASE_URL}/tags.json`);
-  url.searchParams.set('search[category]', '0');
-  url.searchParams.set('search[name_matches]', 'yuri*');
-  url.searchParams.set('search[order]', 'count');
-  url.searchParams.set('limit', '12');
-
-  try {
-    const res = await fetch(url.toString());
-    if (!res.ok) return [];
-    return await res.json();
-  } catch {
-    return [];
-  }
-}
-
 export function getDanbooruUrl(postId) {
   return `${BASE_URL}/posts/${postId}`;
 }
 
 export function parseTags(tagString) {
-  return tagString ? tagString.split(' ').filter(Boolean) : [];
+  return tagString
+    ? tagString
+        .split(' ')
+        .filter(Boolean)
+        .map((t) => t.replace(/_/g, ' '))
+    : [];
 }

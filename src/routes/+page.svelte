@@ -29,14 +29,8 @@
 	let observer = null;
 	let resizeTimeout;
 
-	$: currentSearch = $activeSearch;
-	$: currentSort = $activeSort;
-	$: onlyFavorites = $showFavoritesOnly;
-	$: favoritedIds = $favorites;
-
-	// In favorites mode, derive columns reactively from filtered posts
-	$: displayedColumns = onlyFavorites
-		? distributeToColumns(posts.filter((p) => favoritedIds.includes(p.id)), colCount)
+	$: displayedColumns = $showFavoritesOnly
+		? distributeToColumns(posts.filter((p) => $favorites.includes(p.id)), colCount)
 		: columns;
 
 	function getColCount() {
@@ -78,8 +72,8 @@
 	}
 
 	$: {
-		currentSearch;
-		currentSort;
+		$activeSearch;
+		$activeSort;
 		resetAndLoad();
 	}
 
@@ -100,13 +94,13 @@
 		error = '';
 
 		try {
-			const tags = [currentSearch, currentSort].filter(Boolean).join(' ');
+			const tags = [$activeSearch, $activeSort].filter(Boolean).join(' ');
 			const newPosts = await fetchPosts({ page, tags });
 			if (newPosts.length === 0) {
 				hasMore = false;
 			} else {
 				posts = [...posts, ...newPosts];
-				if (!onlyFavorites) {
+				if (!$showFavoritesOnly) {
 					appendToColumns(newPosts);
 				}
 				page += 1;
@@ -164,7 +158,7 @@
 <TagFilter />
 
 <main id="main-content" class="max-w-7xl mx-auto px-3 pb-16">
-	{#if onlyFavorites && displayedColumns.every((c) => c.length === 0) && !loading}
+	{#if $showFavoritesOnly && displayedColumns.every((c) => c.length === 0) && !loading}
 		<div class="flex flex-col items-center justify-center py-24 gap-4 animate-slide-up">
 			<p class="text-pink-soft/20"><Heart size={60} /></p>
 			<p class="text-pink-soft/40 text-center">
@@ -207,7 +201,7 @@
 			</div>
 		{/if}
 
-		{#if !onlyFavorites}
+		{#if !$showFavoritesOnly}
 			<div bind:this={sentinel} class="h-1"></div>
 		{/if}
 	{/if}

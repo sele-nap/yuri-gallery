@@ -83,6 +83,10 @@
     @apply px-5 py-2 rounded-full bg-gradient-to-r from-pink-mid to-purple-mid text-white font-medium text-sm transition-all duration-200 hover:opacity-90 hover:scale-105 active:scale-95;
   }
 
+  .btn-icon {
+    @apply flex items-center justify-center px-3 py-2 rounded-full glass text-sm transition-colors border border-pink-soft/10 hover:border-pink-mid/30 text-pink-soft/60 hover:text-pink-mid;
+  }
+
   .glass {
     background: rgba(26, 26, 46, 0.8);
     backdrop-filter: blur(12px);

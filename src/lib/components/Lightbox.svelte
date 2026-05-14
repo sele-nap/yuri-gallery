@@ -167,17 +167,14 @@
 				<div class="flex gap-2">
 					<button
 						on:click={toggleSlideshow}
-						class="flex items-center justify-center px-3 py-2 rounded-full glass text-sm transition-colors border {slideshowActive ? 'text-purple-soft border-purple-mid/40 bg-purple-mid/20' : 'text-pink-soft/60 border-pink-soft/10 hover:border-purple-mid/30 hover:text-purple-soft'}"
-						title="Slideshow"
+						class="btn-icon {slideshowActive ? 'text-purple-soft border-purple-mid/40 bg-purple-mid/20' : ''}"
+						aria-label={slideshowActive ? 'Stop slideshow' : 'Start slideshow'}
+						aria-pressed={slideshowActive}
 					>
 						{#if slideshowActive}<Square size={14} />{:else}<Play size={14} />{/if}
 					</button>
 
-					<button
-						on:click={copyLink}
-						class="flex items-center justify-center px-3 py-2 rounded-full glass text-pink-soft/60 hover:text-pink-mid text-sm transition-colors border border-pink-soft/10 hover:border-pink-mid/30"
-						title="Copy link"
-					>
+					<button on:click={copyLink} class="btn-icon" aria-label="Copy link">
 						<Copy size={14} />
 					</button>
 
@@ -185,8 +182,8 @@
 						href={getDanbooruUrl(post.id)}
 						target="_blank"
 						rel="noopener noreferrer"
-						class="flex items-center justify-center px-3 py-2 rounded-full glass text-pink-soft/60 hover:text-pink-mid text-sm transition-colors border border-pink-soft/10 hover:border-pink-mid/30"
-						title="View on Danbooru"
+						class="btn-icon"
+						aria-label="View on Danbooru"
 					>
 						<ExternalLink size={14} />
 					</a>
@@ -196,8 +193,8 @@
 						target="_blank"
 						rel="noopener noreferrer"
 						download
-						class="flex items-center justify-center px-3 py-2 rounded-full glass text-pink-soft/60 hover:text-pink-mid text-sm transition-colors border border-pink-soft/10 hover:border-pink-mid/30"
-						title="Download"
+						class="btn-icon"
+						aria-label="Download image"
 					>
 						<Download size={14} />
 					</a>
@@ -220,7 +217,7 @@
 						<p class="text-xs font-medium text-pink-mid/80 uppercase tracking-wider mb-2">Artist</p>
 						<div class="flex flex-wrap gap-1.5">
 							{#each artists as tag}
-								<button on:click={() => addTagSearch(tag)} class="tag-badge-artist">{tag.replace(/_/g, ' ')}</button>
+								<button on:click={() => addTagSearch(tag)} class="tag-badge-artist">{tag}</button>
 							{/each}
 						</div>
 					</div>
@@ -231,7 +228,7 @@
 						<p class="text-xs font-medium text-purple-soft/80 uppercase tracking-wider mb-2">Characters</p>
 						<div class="flex flex-wrap gap-1.5">
 							{#each characters as tag}
-								<button on:click={() => addTagSearch(tag)} class="tag-badge-character">{tag.replace(/_/g, ' ')}</button>
+								<button on:click={() => addTagSearch(tag)} class="tag-badge-character">{tag}</button>
 							{/each}
 						</div>
 					</div>
@@ -242,7 +239,7 @@
 						<p class="text-xs font-medium text-purple-mid/80 uppercase tracking-wider mb-2">General Tags</p>
 						<div class="flex flex-wrap gap-1.5">
 							{#each generalTags as tag}
-								<button on:click={() => addTagSearch(tag)} class="tag-badge-general">{tag.replace(/_/g, ' ')}</button>
+								<button on:click={() => addTagSearch(tag)} class="tag-badge-general">{tag}</button>
 							{/each}
 						</div>
 					</div>
