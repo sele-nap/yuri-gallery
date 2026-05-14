@@ -72,13 +72,27 @@
 		toast.add('Link copied!', 'info');
 	}
 
+	const FOCUSABLE = 'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])';
+
 	/** @param {KeyboardEvent} e */
 	function handleKey(e) {
 		if (!post) return;
-		if (e.key === 'Escape') close();
-		if (e.key === 'ArrowLeft') prev();
-		if (e.key === 'ArrowRight') next();
-		if (e.key === 'f' || e.key === 'F') toggleFavorite();
+		if (e.key === 'Escape') { close(); return; }
+		if (e.key === 'ArrowLeft') { prev(); return; }
+		if (e.key === 'ArrowRight') { next(); return; }
+		if (e.key === 'f' || e.key === 'F') { toggleFavorite(); return; }
+
+		if (e.key === 'Tab' && dialogEl) {
+			const focusable = /** @type {HTMLElement[]} */ ([...dialogEl.querySelectorAll(FOCUSABLE)]);
+			if (focusable.length === 0) { e.preventDefault(); return; }
+			const first = focusable[0];
+			const last = focusable[focusable.length - 1];
+			if (e.shiftKey) {
+				if (document.activeElement === first) { e.preventDefault(); last.focus(); }
+			} else {
+				if (document.activeElement === last) { e.preventDefault(); first.focus(); }
+			}
+		}
 	}
 
 	/** @param {string} tag */
