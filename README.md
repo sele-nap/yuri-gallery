@@ -2,15 +2,6 @@
 
 A yuri image gallery powered by the [Danbooru](https://danbooru.donmai.us) public API.
 
-## Features
-
-- **Infinite scroll** — stable masonry columns, no position shifts on new batches
-- **Lightbox** — full view with tags, resolution, score, slideshow, and download
-- **Search & filters** — by tag, quick presets, and sort order
-- **Favorites** — persisted in `localStorage`
-- **Keyboard shortcuts** — `←` `→` navigate, `Esc` close, `F` favorite, `?` help
-- **Responsive** — 2 to 5 columns depending on screen width
-
 ## Stack
 
 - [SvelteKit](https://kit.svelte.dev) with static adapter
