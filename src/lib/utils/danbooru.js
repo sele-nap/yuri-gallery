@@ -19,16 +19,10 @@ const LIMIT = 24;
  */
 
 export async function fetchPosts({ page = 1, search = '', sort = '' } = {}) {
-  // Danbooru free tier: 2 tags max. Strategy:
-  // - no search, no sort  → "yuri rating:s"
-  // - sort only           → "yuri {sort}"
-  // - search only         → "yuri {search}"
-  // - search + sort       → "yuri {search}" (sort dropped — search takes priority)
-  const queryTags = search
-    ? `yuri ${search}`
-    : sort
-      ? `yuri ${sort}`
-      : DEFAULT_TAGS;
+  // Danbooru free tier: 2 tags max — "yuri" takes slot 1, one user tag fills slot 2.
+  // If the user types multiple space-separated tags, only the first is used.
+  const userTag = search.trim().split(/\s+/)[0] || sort;
+  const queryTags = userTag ? `yuri ${userTag}` : DEFAULT_TAGS;
   const url = new URL(`${BASE_URL}/posts.json`);
   url.searchParams.set('tags', queryTags);
   url.searchParams.set('limit', String(LIMIT));
