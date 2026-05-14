@@ -19,13 +19,20 @@
 	let imageLoaded = false;
 	let slideshowActive = false;
 	let slideshowTimer = null;
+	let dialogEl;
+	let openerEl;
 
-	$: if (post) imageLoaded = false;
+	$: if (post) {
+		imageLoaded = false;
+		openerEl = /** @type {HTMLElement | null} */ (document.activeElement);
+		setTimeout(() => dialogEl?.focus(), 0);
+	}
 	$: if (!post && slideshowActive) stopSlideshow();
 
 	function close() {
 		stopSlideshow();
 		lightboxPost.set(null);
+		setTimeout(() => openerEl?.focus(), 0);
 	}
 
 	function prev() {
@@ -88,10 +95,12 @@
 {#if post}
 	<!-- svelte-ignore a11y-click-events-have-key-events a11y-no-noninteractive-element-interactions -->
 	<div
+		bind:this={dialogEl}
 		class="fixed inset-0 z-[60] bg-bg-primary/95 backdrop-blur-md flex items-center justify-center p-4"
 		on:click|self={close}
 		role="dialog"
 		aria-modal="true"
+		aria-label="Image viewer"
 		tabindex="-1"
 	>
 		<button

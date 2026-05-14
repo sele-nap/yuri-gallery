@@ -19,44 +19,44 @@ const LIMIT = 24;
  */
 
 export async function fetchPosts({ page = 1, tags = '' } = {}) {
-	const queryTags = tags ? `yuri ${tags}` : DEFAULT_TAGS;
-	const url = new URL(`${BASE_URL}/posts.json`);
-	url.searchParams.set('tags', queryTags);
-	url.searchParams.set('limit', String(LIMIT));
-	url.searchParams.set('page', String(page));
+  const queryTags = tags ? `yuri ${tags}` : DEFAULT_TAGS;
+  const url = new URL(`${BASE_URL}/posts.json`);
+  url.searchParams.set('tags', queryTags);
+  url.searchParams.set('limit', String(LIMIT));
+  url.searchParams.set('page', String(page));
 
-	const res = await fetch(url.toString());
-	if (!res.ok) throw new Error(`Danbooru API error: ${res.status}`);
+  const res = await fetch(url.toString());
+  if (!res.ok) throw new Error(`Danbooru API error: ${res.status}`);
 
-	const data = /** @type {DanbooruPost[]} */ (await res.json());
-	return data.filter(
-		(p) =>
-			p.file_url &&
-			p.large_file_url &&
-			['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(p.file_ext)
-	);
+  const data = /** @type {DanbooruPost[]} */ (await res.json());
+  return data.filter(
+    (p) =>
+      p.file_url &&
+      p.large_file_url &&
+      ['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(p.file_ext),
+  );
 }
 
 export async function fetchPopularTags() {
-	const url = new URL(`${BASE_URL}/tags.json`);
-	url.searchParams.set('search[category]', '0');
-	url.searchParams.set('search[name_matches]', 'yuri*');
-	url.searchParams.set('search[order]', 'count');
-	url.searchParams.set('limit', '12');
+  const url = new URL(`${BASE_URL}/tags.json`);
+  url.searchParams.set('search[category]', '0');
+  url.searchParams.set('search[name_matches]', 'yuri*');
+  url.searchParams.set('search[order]', 'count');
+  url.searchParams.set('limit', '12');
 
-	try {
-		const res = await fetch(url.toString());
-		if (!res.ok) return [];
-		return await res.json();
-	} catch {
-		return [];
-	}
+  try {
+    const res = await fetch(url.toString());
+    if (!res.ok) return [];
+    return await res.json();
+  } catch {
+    return [];
+  }
 }
 
 export function getDanbooruUrl(postId) {
-	return `${BASE_URL}/posts/${postId}`;
+  return `${BASE_URL}/posts/${postId}`;
 }
 
 export function parseTags(tagString) {
-	return tagString ? tagString.split(' ').filter(Boolean) : [];
+  return tagString ? tagString.split(' ').filter(Boolean) : [];
 }
