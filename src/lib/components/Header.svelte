@@ -43,7 +43,14 @@
 		activeSort.set(value);
 		sortOpen = false;
 	}
+
+	/** @param {KeyboardEvent} e */
+	function handleKey(e) {
+		if (e.key === 'Escape') sortOpen = false;
+	}
 </script>
+
+<svelte:window on:keydown={handleKey} />
 
 <header class="glass sticky top-0 z-40 px-4 py-3">
 	<div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center gap-3">
@@ -128,7 +135,8 @@
 					{$showFavoritesOnly
 					? 'bg-pink-mid/20 text-pink-mid border-pink-mid/40'
 					: 'bg-transparent text-pink-soft/60 border-pink-soft/20 hover:border-pink-mid/30 hover:text-pink-soft'}"
-				title="My favorites"
+				aria-label={$showFavoritesOnly ? 'Show all images' : 'Show favorites only'}
+				aria-pressed={$showFavoritesOnly}
 			>
 				<Heart size={16} fill={$showFavoritesOnly ? 'currentColor' : 'none'} />
 				<span class="hidden sm:inline">Favorites</span>

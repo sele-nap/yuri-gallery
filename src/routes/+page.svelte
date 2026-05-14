@@ -149,7 +149,7 @@
 <main id="main-content" class="max-w-7xl mx-auto px-3 pb-16">
 	{#if $showFavoritesOnly && displayedColumns.every((c) => c.length === 0) && !loading}
 		<div class="flex flex-col items-center justify-center py-24 gap-4 animate-slide-up">
-			<p class="text-pink-soft/20"><Heart size={60} /></p>
+			<div class="text-pink-soft/20" aria-hidden="true"><Heart size={60} /></div>
 			<p class="text-pink-soft/40 text-center">
 				No favorites yet.<br />
 				<span class="text-pink-soft/20 text-sm">Click ♡ on any image to save it here.</span>

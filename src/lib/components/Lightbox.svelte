@@ -114,7 +114,7 @@
 		on:click|self={close}
 		role="dialog"
 		aria-modal="true"
-		aria-label="Image viewer"
+		aria-label={artists.length > 0 ? `Artwork by ${artists.join(', ')}` : `Yuri artwork #${post.id}`}
 		tabindex="-1"
 	>
 		<button

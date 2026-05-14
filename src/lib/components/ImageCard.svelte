@@ -97,7 +97,6 @@
 			? 'bg-pink-mid text-white opacity-100 scale-100'
 			: 'bg-bg-primary/70 text-pink-soft/60 opacity-0 group-hover:opacity-100 focus:opacity-100 hover:bg-pink-mid/20 hover:text-pink-mid'}"
 		aria-label={isFavorited ? 'Remove from favorites' : 'Add to favorites'}
-		title={isFavorited ? 'Remove from favorites' : 'Add to favorites'}
 	>
 		<Heart size={14} fill={isFavorited ? 'currentColor' : 'none'} />
 	</button>
