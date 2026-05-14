@@ -7,7 +7,7 @@
 		{ label: 'Hug', tag: 'hug' },
 		{ label: 'School', tag: 'school_uniform' },
 		{ label: 'Flowers', tag: 'flower' },
-		{ label: 'U mbrella', tag: 'umbrella' },
+		{ label: 'Umbrella', tag: 'umbrella' },
 		{ label: 'Crying', tag: 'crying' },
 		{ label: 'Rain', tag: 'rain' },
 		{ label: 'Wedding', tag: 'wedding' },
