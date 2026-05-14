@@ -111,7 +111,7 @@
 	<!-- svelte-ignore a11y-click-events-have-key-events a11y-no-noninteractive-element-interactions -->
 	<div
 		bind:this={dialogEl}
-		class="fixed inset-0 z-[60] bg-bg-primary/95 backdrop-blur-md flex items-center justify-center p-4"
+		class="fixed inset-0 z-[60] bg-[#FDF0F5]/96 backdrop-blur-xl flex items-center justify-center p-4"
 		on:click|self={close}
 		role="dialog"
 		aria-modal="true"
@@ -120,7 +120,7 @@
 	>
 		<button
 			on:click={close}
-			class="absolute top-4 right-4 w-10 h-10 rounded-full glass flex items-center justify-center text-pink-soft/60 hover:text-pink-mid transition-colors z-10"
+			class="absolute top-4 right-4 w-10 h-10 rounded-full glass flex items-center justify-center text-[#4A1030] hover:text-[#C2185B] transition-colors z-10"
 			aria-label="Close"
 		>
 			<X size={18} />
@@ -132,7 +132,7 @@
 				{#if currentIndex > 0}
 					<button
 						on:click={prev}
-						class="absolute left-2 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full glass flex items-center justify-center text-pink-soft/60 hover:text-pink-mid transition-colors z-10"
+						class="absolute left-2 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full glass flex items-center justify-center text-[#4A1030] hover:text-[#C2185B] transition-colors z-10"
 						aria-label="Previous"
 					>
 						<ChevronLeft size={20} />
@@ -141,7 +141,7 @@
 				{#if currentIndex < posts.length - 1}
 					<button
 						on:click={next}
-						class="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full glass flex items-center justify-center text-pink-soft/60 hover:text-pink-mid transition-colors z-10"
+						class="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full glass flex items-center justify-center text-[#4A1030] hover:text-[#C2185B] transition-colors z-10"
 						aria-label="Next"
 					>
 						<ChevronRight size={20} />
@@ -160,7 +160,7 @@
 					on:load={() => (imageLoaded = true)}
 				/>
 				{#if slideshowActive}
-					<div class="absolute bottom-3 left-1/2 -translate-x-1/2 flex items-center gap-2 glass px-3 py-1.5 rounded-full text-xs text-purple-soft/80">
+					<div class="absolute bottom-3 left-1/2 -translate-x-1/2 flex items-center gap-2 glass px-3 py-1.5 rounded-full text-xs text-[#880E4F]">
 						<span class="w-2 h-2 rounded-full bg-purple-mid animate-pulse"></span>
 						Slideshow
 					</div>
@@ -171,7 +171,7 @@
 				<button
 					on:click={toggleFavorite}
 					class="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-full text-sm font-medium transition-all duration-200 border
-						{isFavorited ? 'bg-pink-mid/20 text-pink-mid border-pink-mid/40' : 'bg-transparent text-pink-soft/60 border-pink-soft/20 hover:border-pink-mid/30 hover:text-pink-mid'}"
+						{isFavorited ? 'bg-[#FCE4EC] text-[#880E4F] border-[#C2185B]/40' : 'bg-white text-[#4A1030] border-[#C2185B]/25 hover:border-[#C2185B] hover:text-[#C2185B]'}"
 				>
 					<Heart size={14} fill={isFavorited ? 'currentColor' : 'none'} />
 					{isFavorited ? 'Saved' : 'Save'}
@@ -180,7 +180,7 @@
 				<div class="flex gap-2">
 					<button
 						on:click={toggleSlideshow}
-						class="btn-icon {slideshowActive ? 'text-purple-soft border-purple-mid/40 bg-purple-mid/20' : ''}"
+						class="btn-icon {slideshowActive ? '!text-[#880E4F] !border-[#C2185B]/40 !bg-[#FCE4EC]' : ''}"
 						aria-label={slideshowActive ? 'Stop slideshow' : 'Start slideshow'}
 						aria-pressed={slideshowActive}
 					>
@@ -213,12 +213,12 @@
 					</a>
 				</div>
 
-				<div class="text-xs text-pink-soft/40 space-y-1">
-					<div>ID: <span class="text-pink-soft/60">#{post.id}</span></div>
-					<div>Resolution: <span class="text-pink-soft/60">{post.image_width} × {post.image_height}</span></div>
+				<div class="text-xs text-[#4A1030]/60 space-y-1">
+					<div>ID: <span class="text-[#4A1030]">#{post.id}</span></div>
+					<div>Resolution: <span class="text-[#4A1030]">{post.image_width} × {post.image_height}</span></div>
 					<div class="flex items-center gap-1">
 						Score:
-						<span class="text-pink-soft/60 flex items-center gap-1">
+						<span class="text-[#4A1030] flex items-center gap-1">
 							<Star size={10} fill="currentColor" />
 							{post.score}
 						</span>
@@ -232,8 +232,8 @@
 				] as { label, tags, badge }}
 					{#if tags.length > 0}
 						<div>
-							<p class="text-xs font-medium uppercase tracking-wider mb-2
-								{badge === 'tag-badge-artist' ? 'text-pink-mid/80' : badge === 'tag-badge-character' ? 'text-purple-soft/80' : 'text-purple-mid/80'}"
+							<p class="text-xs font-semibold uppercase tracking-wider mb-2
+								{badge === 'tag-badge-artist' ? 'text-[#C2185B]' : badge === 'tag-badge-character' ? 'text-[#880E4F]' : 'text-[#BF360C]'}"
 							>{label}</p>
 							<div class="flex flex-wrap gap-1.5">
 								{#each tags as tag}

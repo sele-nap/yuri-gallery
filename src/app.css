@@ -18,21 +18,21 @@
   }
 
   ::-webkit-scrollbar-track {
-    background: #0d0d14;
+    background: #f9e4ef;
   }
 
   ::-webkit-scrollbar-thumb {
-    background: #9b5de5;
+    background: #c2185b;
     border-radius: 3px;
   }
 
   ::-webkit-scrollbar-thumb:hover {
-    background: #e879a0;
+    background: #880e4f;
   }
 
   ::selection {
-    background: #e879a0;
-    color: #0d0d14;
+    background: #c2185b;
+    color: #fff;
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -69,31 +69,61 @@
     @apply inline-block px-2 py-0.5 rounded-full text-xs font-medium cursor-pointer transition-all duration-200;
   }
 
+  /* Offset hue from background: saturated text, differently tinted bg */
   .tag-badge-artist {
-    @apply tag-badge bg-pink-mid/20 text-pink-mid hover:bg-pink-mid/40 border border-pink-mid/30;
+    @apply tag-badge bg-[#FCE4EC] text-[#880E4F] hover:bg-[#F8BBD9] border border-[#C2185B]/30;
   }
 
   .tag-badge-general {
-    @apply tag-badge bg-purple-mid/20 text-purple-soft hover:bg-purple-mid/40 border border-purple-mid/30;
+    @apply tag-badge bg-[#FBE9E7] text-[#BF360C] hover:bg-[#FFCCBC] border border-[#E64A19]/30;
   }
 
   .tag-badge-character {
-    @apply tag-badge bg-pink-soft/10 text-pink-soft hover:bg-pink-soft/20 border border-pink-soft/20;
+    @apply tag-badge bg-[#F9E4EF] text-[#4A1030] hover:bg-[#F3C9DF] border border-[#880E4F]/25;
   }
 
+  /* Lesbian flag gradient on btn-primary — white text has sufficient contrast over the dark ends */
   .btn-primary {
-    @apply px-5 py-2 rounded-full bg-gradient-to-r from-pink-mid to-purple-mid text-white font-medium text-sm transition-all duration-200 hover:opacity-90 hover:scale-105 active:scale-95;
+    @apply px-5 py-2 rounded-full font-semibold text-sm transition-all duration-200 hover:opacity-90 hover:scale-105 active:scale-95;
+    background: linear-gradient(to right, #bf360c, #e64a19, #c2185b, #880e4f);
+    color: white;
   }
 
+  /* btn-icon: white bg, dark border and text — contrast guaranteed */
   .btn-icon {
-    @apply flex items-center justify-center px-3 py-2 rounded-full glass text-sm transition-colors border border-pink-soft/10 hover:border-pink-mid/30 text-pink-soft/60 hover:text-pink-mid;
+    @apply flex items-center justify-center px-3 py-2 rounded-full text-sm font-medium transition-colors
+           bg-white border border-[#C2185B]/30 text-[#4A1030] hover:border-[#C2185B] hover:text-[#C2185B];
   }
 
+  /* Glass: light rosy-tinted frosted background with drop shadow for separation */
   .glass {
-    background: rgba(26, 26, 46, 0.8);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(232, 121, 160, 0.15);
+    background: rgba(253, 240, 245, 0.96);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid rgba(194, 24, 91, 0.18);
+    box-shadow:
+      0 2px 12px rgba(74, 16, 48, 0.08),
+      0 1px 3px rgba(74, 16, 48, 0.06);
+  }
+
+  /* glass-dark: used inside the lightbox only (always dark background) */
+  .glass-dark {
+    background: rgba(20, 5, 12, 0.9);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid rgba(194, 24, 91, 0.3);
+  }
+
+  .glass-dark .tag-badge-artist {
+    @apply bg-[#C2185B]/20 text-[#F48FB1] border-[#F48FB1]/30;
+  }
+
+  .glass-dark .tag-badge-character {
+    @apply bg-white/10 text-[#FCE4EC] border-white/20;
+  }
+
+  .glass-dark .tag-badge-general {
+    @apply bg-[#E64A19]/15 text-[#FFCCBC] border-[#FFCCBC]/25;
   }
 }
 
@@ -107,12 +137,7 @@
 }
 
 .shimmer {
-  background: linear-gradient(
-    90deg,
-    transparent 0%,
-    rgba(155, 93, 229, 0.08) 50%,
-    transparent 100%
-  );
+  background: linear-gradient(90deg, #f9e4ef 0%, #f3c9df 50%, #f9e4ef 100%);
   background-size: 200% 100%;
   animation: shimmer 1.5s infinite;
 }

@@ -1,6 +1,7 @@
 <script>
 	import { favorites } from '$lib/stores/favorites.js';
 	import { activeSearch, activeSort, showFavoritesOnly } from '$lib/stores/gallery.js';
+	import { fetchTagSuggestions } from '$lib/utils/danbooru.js';
 	import { ArrowUpDown, Heart, X } from 'lucide-svelte';
 
 	/** @type {number} */
@@ -8,7 +9,16 @@
 
 	let searchInput = '';
 	let debounceTimer;
+	let autocompleteTimer;
 	let sortOpen = false;
+
+	$: searchInput = $activeSearch;
+
+	/** @type {import('$lib/utils/danbooru').TagSuggestion[]} */
+	let suggestions = [];
+	let selectedIndex = -1;
+
+	const TAG_CATEGORIES = { 0: 'general', 1: 'artist', 3: 'copyright', 4: 'character' };
 
 	const SORT_OPTIONS = [
 		{ label: 'Latest', value: '' },
@@ -21,14 +31,50 @@
 
 	function handleSearch() {
 		clearTimeout(debounceTimer);
+		clearTimeout(autocompleteTimer);
 		debounceTimer = setTimeout(() => {
 			activeSearch.set(searchInput.trim());
 		}, 500);
+		autocompleteTimer = setTimeout(async () => {
+			suggestions = searchInput.trim().length >= 2
+				? await fetchTagSuggestions(searchInput.trim())
+				: [];
+			selectedIndex = -1;
+		}, 200);
+	}
+
+	/** @param {import('$lib/utils/danbooru').TagSuggestion} tag */
+	function selectSuggestion(tag) {
+		searchInput = tag.value;
+		activeSearch.set(tag.value);
+		suggestions = [];
+		selectedIndex = -1;
+		clearTimeout(debounceTimer);
+		clearTimeout(autocompleteTimer);
+	}
+
+	/** @param {KeyboardEvent} e */
+	function handleInputKey(e) {
+		if (!suggestions.length) return;
+		if (e.key === 'ArrowDown') {
+			e.preventDefault();
+			selectedIndex = Math.min(selectedIndex + 1, suggestions.length - 1);
+		} else if (e.key === 'ArrowUp') {
+			e.preventDefault();
+			selectedIndex = Math.max(selectedIndex - 1, -1);
+		} else if (e.key === 'Enter' && selectedIndex >= 0) {
+			e.preventDefault();
+			selectSuggestion(suggestions[selectedIndex]);
+		} else if (e.key === 'Escape') {
+			suggestions = [];
+			selectedIndex = -1;
+		}
 	}
 
 	function clearSearch() {
 		searchInput = '';
 		activeSearch.set('');
+		suggestions = [];
 	}
 
 	function goHome() {
@@ -36,6 +82,7 @@
 		activeSearch.set('');
 		activeSort.set('');
 		showFavoritesOnly.set(false);
+		suggestions = [];
 	}
 
 	/** @param {string} value */
@@ -58,9 +105,9 @@
 			<span class="text-2xl font-display italic text-pink-mid group-hover:text-pink-bright transition-colors" lang="ja">
 				百合
 			</span>
-			<span class="text-lg font-display text-pink-soft/80">Gallery</span>
+			<span class="text-lg font-display" style="background: linear-gradient(to right, #D52D00, #EF7627, #FF9A56, #D162A4, #B55690, #A50062); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Gallery</span>
 			{#if imageCount > 0}
-				<span class="text-xs text-pink-soft/30 font-body hidden sm:inline">{imageCount} images</span>
+				<span class="text-xs text-[#9E7080] font-body hidden sm:inline">{imageCount} images</span>
 			{/if}
 		</a>
 
@@ -71,8 +118,14 @@
 				type="text"
 				bind:value={searchInput}
 				on:input={handleSearch}
-				placeholder="Search one tag… (e.g. cherry_blossoms)"
-				class="w-full bg-bg-primary/60 border border-purple-mid/30 rounded-full px-4 py-2 text-sm text-pink-soft placeholder:text-pink-soft/30 focus:outline-none focus:border-pink-mid/60 transition-colors pr-8"
+				on:keydown={handleInputKey}
+				on:blur={() => setTimeout(() => { suggestions = []; }, 150)}
+				placeholder="Search tags… (e.g. cherry_blossoms)"
+				autocomplete="off"
+				aria-autocomplete="list"
+				aria-controls="tag-suggestions"
+				aria-expanded={suggestions.length > 0}
+				class="w-full bg-white border border-[#C2185B]/25 rounded-full px-4 py-2 text-sm text-[#4A1030] placeholder:text-[#4A1030]/40 focus:outline-none focus:border-[#C2185B] focus:ring-2 focus:ring-[#C2185B]/15 transition-colors pr-8"
 			/>
 			{#if searchInput}
 				<button
@@ -83,6 +136,35 @@
 					<X size={14} />
 				</button>
 			{/if}
+
+			{#if suggestions.length > 0}
+				<ul
+					id="tag-suggestions"
+					role="listbox"
+					aria-label="Tag suggestions"
+					class="absolute left-0 right-0 top-full mt-1 z-50 glass rounded-xl overflow-hidden border border-pink-mid/20 animate-slide-up"
+				>
+					<li aria-hidden="true" class="h-0.5 bg-gradient-to-r from-[#D52D00] via-[#FF9A56] via-[#FFF0E8] to-[#A50062]"></li>
+					{#each suggestions as suggestion, i}
+						<li role="option" aria-selected={i === selectedIndex}>
+							<button
+								on:mousedown|preventDefault={() => selectSuggestion(suggestion)}
+								class="w-full text-left px-4 py-2 text-sm flex items-center justify-between gap-2 transition-colors
+									{i === selectedIndex ? 'bg-pink-mid/15' : 'hover:bg-pink-mid/10'}"
+							>
+								<span class="
+									{TAG_CATEGORIES[suggestion.category] === 'artist' ? 'text-[#FF9A56]' :
+									 TAG_CATEGORIES[suggestion.category] === 'character' ? 'text-pink-mid' :
+									 TAG_CATEGORIES[suggestion.category] === 'copyright' ? 'text-[#A50062]/80' :
+									 'text-pink-soft/80'}">
+									{suggestion.label}
+								</span>
+								<span class="text-xs text-pink-soft/30 shrink-0">{suggestion.post_count.toLocaleString()}</span>
+							</button>
+						</li>
+					{/each}
+				</ul>
+			{/if}
 		</div>
 
 		<div class="flex items-center gap-2 shrink-0">
@@ -91,8 +173,8 @@
 					on:click={() => (sortOpen = !sortOpen)}
 					class="flex items-center gap-1.5 px-3 py-2 rounded-full text-sm font-medium transition-all duration-200 border
 						{$activeSort
-						? 'bg-purple-mid/20 text-purple-soft border-purple-mid/40'
-						: 'bg-transparent text-pink-soft/60 border-pink-soft/20 hover:border-purple-mid/30 hover:text-pink-soft'}"
+						? 'bg-[#FCE4EC] text-[#880E4F] border-[#C2185B]/40 font-semibold'
+						: 'bg-white text-[#4A1030] border-[#C2185B]/25 hover:border-[#C2185B] hover:text-[#C2185B]'}"
 					aria-label="Sort"
 					aria-expanded={sortOpen}
 					aria-haspopup="listbox"
@@ -118,8 +200,8 @@
 									on:click={() => setSort(opt.value)}
 									class="w-full text-left px-3 py-2 text-sm transition-colors
 										{$activeSort === opt.value
-										? 'text-purple-soft bg-purple-mid/20'
-										: 'text-pink-soft/60 hover:text-pink-soft hover:bg-purple-mid/10'}"
+										? 'text-[#880E4F] bg-[#FCE4EC] font-semibold'
+										: 'text-[#4A1030] hover:text-[#C2185B] hover:bg-[#FCE4EC]'}"
 								>
 									{opt.label}
 								</button>
@@ -133,8 +215,8 @@
 				on:click={() => showFavoritesOnly.update((v) => !v)}
 				class="flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 border
 					{$showFavoritesOnly
-					? 'bg-pink-mid/20 text-pink-mid border-pink-mid/40'
-					: 'bg-transparent text-pink-soft/60 border-pink-soft/20 hover:border-pink-mid/30 hover:text-pink-soft'}"
+					? 'bg-[#FCE4EC] text-[#880E4F] border-[#C2185B]/40 font-semibold'
+					: 'bg-white text-[#4A1030] border-[#C2185B]/25 hover:border-[#C2185B] hover:text-[#C2185B]'}"
 				aria-label={$showFavoritesOnly ? 'Show all images' : 'Show favorites only'}
 				aria-pressed={$showFavoritesOnly}
 			>

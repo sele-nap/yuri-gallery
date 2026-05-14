@@ -9,7 +9,7 @@
 	import Toast from '$lib/components/Toast.svelte';
 	import { favorites } from '$lib/stores/favorites.js';
 	import { activeSearch, activeSort, showFavoritesOnly } from '$lib/stores/gallery.js';
-	import { fetchPosts } from '$lib/utils/danbooru.js';
+	import { fetchPosts, fetchPostsByIds } from '$lib/utils/danbooru.js';
 	import { Heart } from 'lucide-svelte';
 	import { onDestroy, onMount } from 'svelte';
 
@@ -29,9 +29,44 @@
 	let observer = null;
 	let resizeTimeout;
 
+	/** @type {import('../lib/utils/danbooru').DanbooruPost[]} */
+	let favoritePosts = [];
+	let favoritesLoading = false;
+	let loadedFavKey = '';
+
+	$: {
+		const key = ($showFavoritesOnly ? '1' : '0') + ':' + $favorites.join(',');
+		if ($showFavoritesOnly && key !== loadedFavKey) {
+			loadedFavKey = key;
+			loadFavorites($favorites);
+		}
+	}
+
+	/** @param {number[]} ids */
+	async function loadFavorites(ids) {
+		if (!ids.length) { favoritePosts = []; return; }
+		favoritesLoading = true;
+		try {
+			favoritePosts = await fetchPostsByIds(ids);
+		} catch {
+			favoritePosts = [];
+		} finally {
+			favoritesLoading = false;
+		}
+	}
+
+	$: filteredFavoritePosts = $activeSearch
+		? favoritePosts.filter((p) =>
+				[p.tag_string_general, p.tag_string_character, p.tag_string_artist]
+					.some((s) => s.split(' ').includes($activeSearch))
+		  )
+		: favoritePosts;
+
 	$: displayedColumns = $showFavoritesOnly
-		? distributeToColumns(posts.filter((p) => $favorites.includes(p.id)), colCount)
+		? distributeToColumns(filteredFavoritePosts, colCount)
 		: columns;
+
+	$: imageCount = $showFavoritesOnly ? filteredFavoritePosts.length : posts.length;
 
 	function getColCount() {
 		if (typeof window === 'undefined') return 2;
@@ -74,7 +109,7 @@
 	$: {
 		$activeSearch;
 		$activeSort;
-		resetAndLoad();
+		if (!$showFavoritesOnly) resetAndLoad();
 	}
 
 	async function resetAndLoad() {
@@ -142,15 +177,15 @@
 	<title>百合 Gallery</title>
 </svelte:head>
 
-<Header imageCount={posts.length} />
-<TagFilter />
+<Header {imageCount} />
+<TagFilter {posts} {favoritePosts} />
 
 <div role="status" aria-live="polite" aria-atomic="true" class="sr-only">
 	{#if loading}Loading images…{:else if posts.length > 0}{posts.length} images loaded{/if}
 </div>
 
 <main id="main-content" class="max-w-7xl mx-auto px-3 pb-16">
-	{#if $showFavoritesOnly && displayedColumns.every((c) => c.length === 0) && !loading}
+	{#if $showFavoritesOnly && filteredFavoritePosts.length === 0 && !loading && !favoritesLoading}
 		<div class="flex flex-col items-center justify-center py-24 gap-4 animate-slide-up">
 			<div class="text-pink-soft/20" aria-hidden="true"><Heart size={60} /></div>
 			<p class="text-pink-soft/40 text-center">
@@ -178,7 +213,7 @@
 					{#each column as post (post.id)}
 						<ImageCard {post} />
 					{/each}
-					{#if loading}
+					{#if $showFavoritesOnly ? favoritesLoading : loading}
 						<SkeletonCard />
 						<SkeletonCard />
 					{/if}

@@ -40,6 +40,43 @@ export async function fetchPosts({ page = 1, search = '', sort = '' } = {}) {
   );
 }
 
+/**
+ * @typedef {{ value: string, label: string, category: number, post_count: number }} TagSuggestion
+ */
+
+/** @param {string} query */
+export async function fetchTagSuggestions(query) {
+  if (query.length < 2) return [];
+  const url = new URL(`${BASE_URL}/autocomplete.json`);
+  url.searchParams.set('search[query]', query);
+  url.searchParams.set('search[type]', 'tag_query');
+  url.searchParams.set('limit', '8');
+  try {
+    const res = await fetch(url.toString());
+    if (!res.ok) return [];
+    return /** @type {TagSuggestion[]} */ (await res.json());
+  } catch {
+    return [];
+  }
+}
+
+/** @param {number[]} ids */
+export async function fetchPostsByIds(ids) {
+  if (!ids.length) return [];
+  const url = new URL(`${BASE_URL}/posts.json`);
+  url.searchParams.set('tags', `id:${ids.join(',')}`);
+  url.searchParams.set('limit', String(Math.min(ids.length, 200)));
+  const res = await fetch(url.toString());
+  if (!res.ok) throw new Error(`Danbooru API error: ${res.status}`);
+  const data = /** @type {DanbooruPost[]} */ (await res.json());
+  return data.filter(
+    (p) =>
+      p.file_url &&
+      p.large_file_url &&
+      ['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(p.file_ext),
+  );
+}
+
 export function getDanbooruUrl(postId) {
   return `${BASE_URL}/posts/${postId}`;
 }

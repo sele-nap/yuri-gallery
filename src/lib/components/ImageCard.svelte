@@ -29,8 +29,8 @@
 	<button
 		on:click={openLightbox}
 		disabled={error}
-		class="block w-full rounded-xl overflow-hidden relative ring-0 transition-all duration-300 focus:outline-none focus:ring-2
-			{error ? 'cursor-default' : 'cursor-zoom-in hover:ring-2 ring-pink-mid/60'}"
+		class="block w-full rounded-xl overflow-hidden relative ring-0 shadow-sm shadow-pink-soft/15 transition-all duration-300 focus:outline-none focus:ring-2
+			{error ? 'cursor-default' : 'cursor-zoom-in hover:shadow-md hover:shadow-pink-soft/20 hover:ring-2 ring-pink-mid/60'}"
 	>
 		<!-- Aspect-ratio wrapper prevents layout duplication during loading -->
 		<div
@@ -62,7 +62,7 @@
 			{/if}
 		</div>
 
-		<div class="absolute inset-0 bg-gradient-to-t from-bg-primary/90 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl">
+		<div class="absolute inset-0 bg-gradient-to-t from-[#130810]/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl">
 			<div class="absolute bottom-0 left-0 right-0 p-3">
 				{#if artists.length > 0}
 					<p class="text-pink-mid text-xs font-medium mb-1 truncate">
