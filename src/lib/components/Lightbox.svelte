@@ -15,6 +15,7 @@
 	$: characters = post ? parseTags(post.tag_string_character).slice(0, 6) : [];
 	$: generalTags = post ? parseTags(post.tag_string_general).slice(0, 12) : [];
 	$: currentIndex = post ? posts.findIndex((p) => p.id === post.id) : -1;
+	$: imageAlt = artists.length > 0 ? `Artwork by ${artists.join(', ')}` : `Yuri artwork #${post?.id}`;
 
 	let imageLoaded = false;
 	let slideshowActive = false;
@@ -114,7 +115,7 @@
 		on:click|self={close}
 		role="dialog"
 		aria-modal="true"
-		aria-label={artists.length > 0 ? `Artwork by ${artists.join(', ')}` : `Yuri artwork #${post.id}`}
+		aria-label={imageAlt}
 		tabindex="-1"
 	>
 		<button
@@ -153,7 +154,7 @@
 				{/if}
 				<img
 					src={post.large_file_url}
-					alt={artists.length > 0 ? `Artwork by ${artists.join(', ')}` : `Yuri artwork #${post.id}`}
+					alt={imageAlt}
 					class="max-w-full max-h-[50vh] md:max-h-[65vh] lg:max-h-[80vh] object-contain rounded-2xl shadow-2xl transition-opacity duration-300"
 					class:opacity-0={!imageLoaded}
 					class:opacity-100={imageLoaded}
@@ -226,38 +227,24 @@
 					</div>
 				</div>
 
-				{#if artists.length > 0}
-					<div>
-						<p class="text-xs font-medium text-pink-mid/80 uppercase tracking-wider mb-2">Artist</p>
-						<div class="flex flex-wrap gap-1.5">
-							{#each artists as tag}
-								<button on:click={() => addTagSearch(tag)} class="tag-badge-artist">{tag}</button>
-							{/each}
+				{#each [
+					{ label: 'Artist', tags: artists, badge: 'tag-badge-artist' },
+					{ label: 'Characters', tags: characters, badge: 'tag-badge-character' },
+					{ label: 'General Tags', tags: generalTags, badge: 'tag-badge-general' }
+				] as { label, tags, badge }}
+					{#if tags.length > 0}
+						<div>
+							<p class="text-xs font-medium uppercase tracking-wider mb-2
+								{badge === 'tag-badge-artist' ? 'text-pink-mid/80' : badge === 'tag-badge-character' ? 'text-purple-soft/80' : 'text-purple-mid/80'}"
+							>{label}</p>
+							<div class="flex flex-wrap gap-1.5">
+								{#each tags as tag}
+									<button on:click={() => addTagSearch(tag)} class={badge}>{tag}</button>
+								{/each}
+							</div>
 						</div>
-					</div>
-				{/if}
-
-				{#if characters.length > 0}
-					<div>
-						<p class="text-xs font-medium text-purple-soft/80 uppercase tracking-wider mb-2">Characters</p>
-						<div class="flex flex-wrap gap-1.5">
-							{#each characters as tag}
-								<button on:click={() => addTagSearch(tag)} class="tag-badge-character">{tag}</button>
-							{/each}
-						</div>
-					</div>
-				{/if}
-
-				{#if generalTags.length > 0}
-					<div>
-						<p class="text-xs font-medium text-purple-mid/80 uppercase tracking-wider mb-2">General Tags</p>
-						<div class="flex flex-wrap gap-1.5">
-							{#each generalTags as tag}
-								<button on:click={() => addTagSearch(tag)} class="tag-badge-general">{tag}</button>
-							{/each}
-						</div>
-					</div>
-				{/if}
+					{/if}
+				{/each}
 			</div>
 		</div>
 	</div>

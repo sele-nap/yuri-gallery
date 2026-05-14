@@ -25,7 +25,7 @@
 	}
 </script>
 
-<div class="masonry-item group relative" style="will-change: transform;">
+<div class="masonry-item group relative will-change-transform">
 	<button
 		on:click={openLightbox}
 		disabled={error}
@@ -34,15 +34,12 @@
 	>
 		<!-- Aspect-ratio wrapper prevents layout duplication during loading -->
 		<div
-			class="relative w-full overflow-hidden"
-			style="aspect-ratio: {post.image_width}/{post.image_height}; min-height: 120px;"
+			class="relative w-full overflow-hidden min-h-[120px]"
+			style="aspect-ratio: {post.image_width}/{post.image_height};"
 		>
 			{#if !loaded && !error}
 				<div class="absolute inset-0 bg-bg-card overflow-hidden">
-					<div
-						class="w-full h-full"
-						style="background: linear-gradient(90deg, transparent 0%, rgba(155,93,229,0.08) 50%, transparent 100%); background-size: 200% 100%; animation: shimmer 1.5s infinite;"
-					></div>
+					<div class="shimmer w-full h-full"></div>
 				</div>
 			{/if}
 
@@ -103,4 +100,3 @@
 		<Heart size={14} fill={isFavorited ? 'currentColor' : 'none'} />
 	</button>
 </div>
-
