@@ -98,7 +98,7 @@
 
 	/** @param {string} tag */
 	function addTagSearch(tag) {
-		activeSearch.set(tag);
+		activeSearch.set(tag.replace(/ /g, '_'));
 		close();
 	}
 

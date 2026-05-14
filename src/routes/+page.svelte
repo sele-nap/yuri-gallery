@@ -165,6 +165,12 @@
 			<button on:click={resetAndLoad} class="btn-primary">Try again</button>
 		</div>
 
+	{:else if !hasMore && posts.length === 0 && !loading}
+		<div class="flex flex-col items-center justify-center py-24 gap-4 animate-slide-up">
+			<p class="text-pink-soft/40 text-center">No results for "<span class="text-pink-mid">{$activeSearch}</span>".</p>
+			<button on:click={() => activeSearch.set('')} class="btn-primary">Clear search</button>
+		</div>
+
 	{:else}
 		<div class="masonry">
 			{#each displayedColumns as column}
