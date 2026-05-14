@@ -113,17 +113,6 @@
 	}
 
 	onMount(() => {
-		const n = getColCount();
-		if (n !== colCount) {
-			colCount = n;
-			if (posts.length > 0) {
-				columns = distributeToColumns(posts, n);
-				nextColIdx = posts.length;
-			} else {
-				columns = Array.from({ length: n }, () => []);
-			}
-		}
-
 		window.addEventListener('resize', handleResize);
 
 		observer = new IntersectionObserver(
