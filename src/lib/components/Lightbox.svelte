@@ -127,7 +127,6 @@
 		</button>
 
 		<div class="flex flex-col lg:flex-row gap-4 max-h-[90vh] w-full max-w-6xl animate-slide-up overflow-y-auto lg:overflow-visible">
-			<!-- Image -->
 			<div class="flex-1 flex items-center justify-center min-h-0 relative">
 				<!-- Nav arrows inside image container, won't conflict with close button -->
 				{#if currentIndex > 0}
@@ -168,7 +167,6 @@
 				{/if}
 			</div>
 
-			<!-- Sidebar -->
 			<div class="lg:w-72 shrink-0 glass rounded-2xl p-4 overflow-y-auto max-h-[40vh] lg:max-h-[80vh] flex flex-col gap-4">
 				<button
 					on:click={toggleFavorite}

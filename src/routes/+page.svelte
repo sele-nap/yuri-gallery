@@ -94,8 +94,7 @@
 		error = '';
 
 		try {
-			const tags = [$activeSearch, $activeSort].filter(Boolean).join(' ');
-			const newPosts = await fetchPosts({ page, tags });
+			const newPosts = await fetchPosts({ page, search: $activeSearch, sort: $activeSort });
 			if (newPosts.length === 0) {
 				hasMore = false;
 			} else {

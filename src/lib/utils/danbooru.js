@@ -18,8 +18,17 @@ const LIMIT = 24;
  * @property {string} file_ext
  */
 
-export async function fetchPosts({ page = 1, tags = '' } = {}) {
-  const queryTags = tags ? `yuri ${tags}` : DEFAULT_TAGS;
+export async function fetchPosts({ page = 1, search = '', sort = '' } = {}) {
+  // Danbooru free tier: 2 tags max. Strategy:
+  // - no search, no sort  → "yuri rating:s"
+  // - sort only           → "yuri {sort}"
+  // - search only         → "yuri {search}"
+  // - search + sort       → "yuri {search}" (sort dropped — search takes priority)
+  const queryTags = search
+    ? `yuri ${search}`
+    : sort
+      ? `yuri ${sort}`
+      : DEFAULT_TAGS;
   const url = new URL(`${BASE_URL}/posts.json`);
   url.searchParams.set('tags', queryTags);
   url.searchParams.set('limit', String(LIMIT));
