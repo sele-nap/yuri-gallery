@@ -24,7 +24,7 @@
 			aria-pressed={activeTag === tag}
 			class="px-3 py-1 rounded-full text-xs font-medium transition-all duration-200 border
 				{activeTag === tag
-				? 'bg-gradient-to-r from-[#D52D00] via-[#FF9A56] to-[#B55690] text-white border-transparent shadow-lg shadow-[#D52D00]/20'
+				? 'bg-gradient-to-r from-[#D52D00] via-[#FF9A56] to-[#A50062] text-white border-transparent shadow-lg shadow-[#D52D00]/20'
 				: 'bg-transparent text-pink-soft/50 border-pink-soft/15 hover:border-pink-mid/40 hover:text-pink-soft'}"
 		>
 			{label}
