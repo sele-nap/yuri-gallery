@@ -14,14 +14,13 @@
 		{ label: 'Yukata', tag: 'yukata' }
 	];
 
-	$: activeTag = $activeSearch;
 </script>
 
-<div class="flex flex-wrap gap-2 px-4 py-3">
+<nav aria-label="Filter by tag" class="flex flex-wrap gap-2 px-4 py-3">
 	{#each PRESET_TAGS as { label, tag }}
 		<button
 			on:click={() => activeSearch.set(tag)}
-			aria-pressed={activeTag === tag}
+			aria-pressed={$activeSearch === tag}
 			class="px-3 py-1 rounded-full text-xs font-medium transition-all duration-200 border
 				{activeTag === tag
 				? 'bg-gradient-to-r from-[#D52D00] via-[#FF9A56] via-[#FFF0E8] to-[#A50062] text-[#1A0008] border-transparent shadow-lg shadow-[#D52D00]/20'
@@ -30,4 +29,4 @@
 			{label}
 		</button>
 	{/each}
-</div>
+</nav>

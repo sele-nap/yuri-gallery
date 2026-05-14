@@ -146,6 +146,10 @@
 <Header imageCount={posts.length} />
 <TagFilter />
 
+<div role="status" aria-live="polite" aria-atomic="true" class="sr-only">
+	{#if loading}Loading images…{:else if posts.length > 0}{posts.length} images loaded{/if}
+</div>
+
 <main id="main-content" class="max-w-7xl mx-auto px-3 pb-16">
 	{#if $showFavoritesOnly && displayedColumns.every((c) => c.length === 0) && !loading}
 		<div class="flex flex-col items-center justify-center py-24 gap-4 animate-slide-up">

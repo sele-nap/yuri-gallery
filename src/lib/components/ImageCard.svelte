@@ -28,7 +28,9 @@
 <div class="masonry-item group relative" style="will-change: transform;">
 	<button
 		on:click={openLightbox}
-		class="block w-full rounded-xl overflow-hidden relative cursor-zoom-in ring-0 hover:ring-2 ring-pink-mid/60 transition-all duration-300 focus:outline-none focus:ring-2"
+		disabled={error}
+		class="block w-full rounded-xl overflow-hidden relative ring-0 transition-all duration-300 focus:outline-none focus:ring-2
+			{error ? 'cursor-default' : 'cursor-zoom-in hover:ring-2 ring-pink-mid/60'}"
 	>
 		<!-- Aspect-ratio wrapper prevents layout duplication during loading -->
 		<div
@@ -102,9 +104,3 @@
 	</button>
 </div>
 
-<style>
-	@keyframes shimmer {
-		0% { background-position: -200% 0; }
-		100% { background-position: 200% 0; }
-	}
-</style>

@@ -5,6 +5,7 @@
 <div
 	class="masonry-item rounded-xl overflow-hidden"
 	style="height: {height}px;"
+	aria-hidden="true"
 >
 	<div class="w-full h-full bg-bg-card relative overflow-hidden">
 		<div
@@ -14,9 +15,3 @@
 	</div>
 </div>
 
-<style>
-	@keyframes shimmer {
-		0% { background-position: -200% 0; }
-		100% { background-position: 200% 0; }
-	}
-</style>

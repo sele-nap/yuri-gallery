@@ -1,5 +1,7 @@
 <script>
 	let open = false;
+	let dialogEl;
+	let triggerEl;
 
 	/** @param {KeyboardEvent} e */
 	function handleKey(e) {
@@ -8,8 +10,13 @@
 			if (tag === 'INPUT' || tag === 'TEXTAREA') return;
 			open = !open;
 		}
-		if (e.key === 'Escape') open = false;
+		if (e.key === 'Escape' && open) {
+			open = false;
+			triggerEl?.focus();
+		}
 	}
+
+	$: if (open && dialogEl) setTimeout(() => dialogEl?.focus(), 0);
 
 	const shortcuts = [
 		{ key: '← →', desc: 'Navigate images in lightbox' },
@@ -22,9 +29,12 @@
 <svelte:window on:keydown={handleKey} />
 
 <button
+	bind:this={triggerEl}
 	on:click={() => (open = !open)}
 	class="fixed bottom-6 left-6 z-50 w-10 h-10 rounded-full glass border border-purple-mid/30 flex items-center justify-center text-purple-soft/60 hover:text-purple-soft hover:bg-purple-mid/10 transition-all duration-200 text-sm font-bold shadow-lg"
 	aria-label="Keyboard shortcuts"
+	aria-expanded={open}
+	aria-haspopup="dialog"
 >
 	?
 </button>
@@ -33,9 +43,16 @@
 	<!-- svelte-ignore a11y-click-events-have-key-events a11y-no-static-element-interactions -->
 	<div
 		class="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-4"
-		on:click|self={() => (open = false)}
+		on:click|self={() => { open = false; triggerEl?.focus(); }}
 	>
-		<div class="glass rounded-2xl p-5 w-full max-w-xs animate-slide-up border border-purple-mid/20">
+		<div
+			bind:this={dialogEl}
+			role="dialog"
+			aria-modal="true"
+			aria-label="Keyboard shortcuts"
+			tabindex="-1"
+			class="glass rounded-2xl p-5 w-full max-w-xs animate-slide-up border border-purple-mid/20 focus:outline-none"
+		>
 			<p class="text-xs font-medium text-purple-soft/60 uppercase tracking-wider mb-3">Keyboard shortcuts</p>
 			<div class="space-y-2.5">
 				{#each shortcuts as { key, desc }}

@@ -96,3 +96,8 @@
     border: 1px solid rgba(232, 121, 160, 0.15);
   }
 }
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
