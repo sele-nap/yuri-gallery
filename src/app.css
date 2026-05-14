@@ -71,15 +71,33 @@
 
   /* Offset hue from background: saturated text, differently tinted bg */
   .tag-badge-artist {
-    @apply tag-badge bg-[#FCE4EC] text-[#880E4F] hover:bg-[#F8BBD9] border border-[#C2185B]/30;
+    @apply tag-badge border;
+    background-color: #fce4ec;
+    color: #880e4f;
+    border-color: rgba(194, 24, 91, 0.3);
+  }
+  .tag-badge-artist:hover {
+    background-color: #f8bbd9;
   }
 
   .tag-badge-general {
-    @apply tag-badge bg-[#FBE9E7] text-[#BF360C] hover:bg-[#FFCCBC] border border-[#E64A19]/30;
+    @apply tag-badge border;
+    background-color: #fbe9e7;
+    color: #bf360c;
+    border-color: rgba(230, 74, 25, 0.3);
+  }
+  .tag-badge-general:hover {
+    background-color: #ffccbc;
   }
 
   .tag-badge-character {
-    @apply tag-badge bg-[#F9E4EF] text-[#4A1030] hover:bg-[#F3C9DF] border border-[#880E4F]/25;
+    @apply tag-badge border;
+    background-color: #f9e4ef;
+    color: #4a1030;
+    border-color: rgba(136, 14, 79, 0.25);
+  }
+  .tag-badge-character:hover {
+    background-color: #f3c9df;
   }
 
   /* Lesbian flag gradient on btn-primary — white text has sufficient contrast over the dark ends */
@@ -91,8 +109,13 @@
 
   /* btn-icon: white bg, dark border and text — contrast guaranteed */
   .btn-icon {
-    @apply flex items-center justify-center px-3 py-2 rounded-full text-sm font-medium transition-colors
-           bg-white border border-[#C2185B]/30 text-[#4A1030] hover:border-[#C2185B] hover:text-[#C2185B];
+    @apply flex items-center justify-center px-3 py-2 rounded-full text-sm font-medium transition-colors bg-white border;
+    color: #4a1030;
+    border-color: rgba(194, 24, 91, 0.3);
+  }
+  .btn-icon:hover {
+    color: #c2185b;
+    border-color: #c2185b;
   }
 
   /* Glass: light rosy-tinted frosted background with drop shadow for separation */
@@ -115,15 +138,21 @@
   }
 
   .glass-dark .tag-badge-artist {
-    @apply bg-[#C2185B]/20 text-[#F48FB1] border-[#F48FB1]/30;
+    background-color: rgba(194, 24, 91, 0.2);
+    color: #f48fb1;
+    border-color: rgba(244, 143, 177, 0.3);
   }
 
   .glass-dark .tag-badge-character {
-    @apply bg-white/10 text-[#FCE4EC] border-white/20;
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #fce4ec;
+    border-color: rgba(255, 255, 255, 0.2);
   }
 
   .glass-dark .tag-badge-general {
-    @apply bg-[#E64A19]/15 text-[#FFCCBC] border-[#FFCCBC]/25;
+    background-color: rgba(230, 74, 25, 0.15);
+    color: #ffccbc;
+    border-color: rgba(255, 204, 188, 0.25);
   }
 }
 

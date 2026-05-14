@@ -1,4 +1,5 @@
 <script>
+	import { browser } from '$app/environment';
 	import BackToTop from '$lib/components/BackToTop.svelte';
 	import Header from '$lib/components/Header.svelte';
 	import ImageCard from '$lib/components/ImageCard.svelte';
@@ -106,7 +107,7 @@
 		}, 150);
 	}
 
-	$: {
+	$: if (browser) {
 		$activeSearch;
 		$activeSort;
 		if (!$showFavoritesOnly) resetAndLoad();
@@ -178,7 +179,7 @@
 </svelte:head>
 
 <Header {imageCount} />
-<TagFilter {posts} {favoritePosts} />
+<TagFilter {favoritePosts} />
 
 <div role="status" aria-live="polite" aria-atomic="true" class="sr-only">
 	{#if loading}Loading images…{:else if posts.length > 0}{posts.length} images loaded{/if}
@@ -187,22 +188,22 @@
 <main id="main-content" class="max-w-7xl mx-auto px-3 pb-16">
 	{#if $showFavoritesOnly && filteredFavoritePosts.length === 0 && !loading && !favoritesLoading}
 		<div class="flex flex-col items-center justify-center py-24 gap-4 animate-slide-up">
-			<div class="text-pink-soft/20" aria-hidden="true"><Heart size={60} /></div>
-			<p class="text-pink-soft/40 text-center">
+			<div class="text-sakura-soft/20" aria-hidden="true"><Heart size={60} /></div>
+			<p class="text-sakura-soft/40 text-center">
 				No favorites yet.<br />
-				<span class="text-pink-soft/20 text-sm">Click ♡ on any image to save it here.</span>
+				<span class="text-sakura-soft/20 text-sm">Click ♡ on any image to save it here.</span>
 			</p>
 		</div>
 
 	{:else if error && posts.length === 0}
 		<div class="flex flex-col items-center justify-center py-24 gap-4 animate-slide-up">
-			<p class="text-pink-soft/40 text-center">{error}</p>
+			<p class="text-sakura-soft/40 text-center">{error}</p>
 			<button on:click={resetAndLoad} class="btn-primary">Try again</button>
 		</div>
 
 	{:else if !hasMore && posts.length === 0 && !loading}
 		<div class="flex flex-col items-center justify-center py-24 gap-4 animate-slide-up">
-			<p class="text-pink-soft/40 text-center">No results for "<span class="text-pink-mid">{$activeSearch}</span>".</p>
+			<p class="text-sakura-soft/40 text-center">No results for "<span class="text-sakura-mid">{$activeSearch}</span>".</p>
 			<button on:click={() => activeSearch.set('')} class="btn-primary">Clear search</button>
 		</div>
 
@@ -223,14 +224,14 @@
 
 		{#if error}
 			<div class="text-center py-8">
-				<p class="text-pink-soft/40 text-sm mb-3">{error}</p>
+				<p class="text-sakura-soft/40 text-sm mb-3">{error}</p>
 				<button on:click={loadMore} class="btn-primary">Try again</button>
 			</div>
 		{/if}
 
 		{#if !hasMore && posts.length > 0}
 			<div class="text-center py-12">
-				<p class="text-pink-soft/20 text-sm font-display italic">~ End of gallery ~</p>
+				<p class="text-sakura-soft/20 text-sm font-display italic">~ End of gallery ~</p>
 			</div>
 		{/if}
 

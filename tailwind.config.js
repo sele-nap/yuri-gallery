@@ -5,21 +5,36 @@ export default {
     extend: {
       colors: {
         bg: {
-          primary: '#FDF0F5', // warm pastel rose background
-          secondary: '#F9E4EF', // slightly deeper for secondary surfaces
-          card: '#FFFFFF', // pure white for image cards
+          primary: '#FDF0F5',
+          secondary: '#F9E4EF',
+          card: '#FFFFFF',
         },
-        // pink.soft = main text — deep wine, high contrast on rose bg
-        pink: {
+        sakura: {
+          dark: '#1A0008',
+          overlay: '#130810',
           soft: '#4A1030',
-          mid: '#C2185B', // lesbian flag rose
-          bright: '#E64A19', // lesbian flag orange-red
+          muted: '#9E7080',
+          blush: '#F3C9DF',
+          pale: '#FCE4EC',
+          rose: '#F8BBD9',
+          glow: '#F48FB1',
+          mid: '#C2185B',
+          bright: '#E64A19',
         },
-        // purple = secondary accents — raspberry/magenta (flag)
-        purple: {
+        peach: {
+          pale: '#FBE9E7',
+          light: '#FFCCBC',
+        },
+        plum: {
           soft: '#7B1F4A',
           mid: '#880E4F',
           bright: '#BF360C',
+        },
+        flag: {
+          red: '#D52D00',
+          salmon: '#FF9A56',
+          white: '#FFF0E8',
+          purple: '#A50062',
         },
       },
       fontFamily: {

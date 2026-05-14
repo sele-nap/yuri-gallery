@@ -102,12 +102,12 @@
 <header class="glass sticky top-0 z-40 px-4 py-3">
 	<div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center gap-3">
 		<a href="/" on:click={goHome} class="flex items-center gap-2 shrink-0 group">
-			<span class="text-2xl font-display italic text-pink-mid group-hover:text-pink-bright transition-colors" lang="ja">
+			<span class="text-2xl font-display italic text-sakura-mid group-hover:text-sakura-bright transition-colors" lang="ja">
 				百合
 			</span>
 			<span class="text-lg font-display" style="background: linear-gradient(to right, #D52D00, #EF7627, #FF9A56, #D162A4, #B55690, #A50062); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Gallery</span>
 			{#if imageCount > 0}
-				<span class="text-xs text-[#9E7080] font-body hidden sm:inline">{imageCount} images</span>
+				<span class="text-xs text-sakura-muted font-body hidden sm:inline">{imageCount} images</span>
 			{/if}
 		</a>
 
@@ -121,16 +121,17 @@
 				on:keydown={handleInputKey}
 				on:blur={() => setTimeout(() => { suggestions = []; }, 150)}
 				placeholder="Search tags… (e.g. cherry_blossoms)"
+				role="combobox"
 				autocomplete="off"
 				aria-autocomplete="list"
 				aria-controls="tag-suggestions"
 				aria-expanded={suggestions.length > 0}
-				class="w-full bg-white border border-[#C2185B]/25 rounded-full px-4 py-2 text-sm text-[#4A1030] placeholder:text-[#4A1030]/40 focus:outline-none focus:border-[#C2185B] focus:ring-2 focus:ring-[#C2185B]/15 transition-colors pr-8"
+				class="w-full bg-white border border-sakura-mid/25 rounded-full px-4 py-2 text-sm text-sakura-soft placeholder:text-sakura-soft/40 focus:outline-none focus:border-sakura-mid focus:ring-2 focus:ring-sakura-mid/15 transition-colors pr-8"
 			/>
 			{#if searchInput}
 				<button
 					on:click={clearSearch}
-					class="absolute right-3 top-1/2 -translate-y-1/2 text-pink-soft/40 hover:text-pink-mid transition-colors"
+					class="absolute right-3 top-1/2 -translate-y-1/2 text-sakura-soft/40 hover:text-sakura-mid transition-colors"
 					aria-label="Clear search"
 				>
 					<X size={14} />
@@ -142,24 +143,24 @@
 					id="tag-suggestions"
 					role="listbox"
 					aria-label="Tag suggestions"
-					class="absolute left-0 right-0 top-full mt-1 z-50 glass rounded-xl overflow-hidden border border-pink-mid/20 animate-slide-up"
+					class="absolute left-0 right-0 top-full mt-1 z-50 glass rounded-xl overflow-hidden border border-sakura-mid/20 animate-slide-up"
 				>
-					<li aria-hidden="true" class="h-0.5 bg-gradient-to-r from-[#D52D00] via-[#FF9A56] via-[#FFF0E8] to-[#A50062]"></li>
+					<li aria-hidden="true" class="h-0.5 bg-gradient-to-r from-flag-red via-flag-salmon via-flag-white to-flag-purple"></li>
 					{#each suggestions as suggestion, i}
 						<li role="option" aria-selected={i === selectedIndex}>
 							<button
 								on:mousedown|preventDefault={() => selectSuggestion(suggestion)}
 								class="w-full text-left px-4 py-2 text-sm flex items-center justify-between gap-2 transition-colors
-									{i === selectedIndex ? 'bg-pink-mid/15' : 'hover:bg-pink-mid/10'}"
+									{i === selectedIndex ? 'bg-sakura-mid/15' : 'hover:bg-sakura-mid/10'}"
 							>
 								<span class="
-									{TAG_CATEGORIES[suggestion.category] === 'artist' ? 'text-[#FF9A56]' :
-									 TAG_CATEGORIES[suggestion.category] === 'character' ? 'text-pink-mid' :
-									 TAG_CATEGORIES[suggestion.category] === 'copyright' ? 'text-[#A50062]/80' :
-									 'text-pink-soft/80'}">
+									{TAG_CATEGORIES[suggestion.category] === 'artist' ? 'text-flag-salmon' :
+									 TAG_CATEGORIES[suggestion.category] === 'character' ? 'text-sakura-mid' :
+									 TAG_CATEGORIES[suggestion.category] === 'copyright' ? 'text-flag-purple/80' :
+									 'text-sakura-soft/80'}">
 									{suggestion.label}
 								</span>
-								<span class="text-xs text-pink-soft/30 shrink-0">{suggestion.post_count.toLocaleString()}</span>
+								<span class="text-xs text-sakura-soft/30 shrink-0">{suggestion.post_count.toLocaleString()}</span>
 							</button>
 						</li>
 					{/each}
@@ -173,8 +174,8 @@
 					on:click={() => (sortOpen = !sortOpen)}
 					class="flex items-center gap-1.5 px-3 py-2 rounded-full text-sm font-medium transition-all duration-200 border
 						{$activeSort
-						? 'bg-[#FCE4EC] text-[#880E4F] border-[#C2185B]/40 font-semibold'
-						: 'bg-white text-[#4A1030] border-[#C2185B]/25 hover:border-[#C2185B] hover:text-[#C2185B]'}"
+						? 'bg-sakura-pale text-plum-mid border-sakura-mid/40 font-semibold'
+						: 'bg-white text-sakura-soft border-sakura-mid/25 hover:border-sakura-mid hover:text-sakura-mid'}"
 					aria-label="Sort"
 					aria-expanded={sortOpen}
 					aria-haspopup="listbox"
@@ -192,7 +193,7 @@
 					<ul
 						role="listbox"
 						aria-label="Sort order"
-						class="absolute right-0 top-full mt-2 z-50 glass rounded-xl overflow-hidden border border-purple-mid/20 w-36 animate-slide-up"
+						class="absolute right-0 top-full mt-2 z-50 glass rounded-xl overflow-hidden border border-plum-mid/20 w-36 animate-slide-up"
 					>
 						{#each SORT_OPTIONS as opt}
 							<li role="option" aria-selected={$activeSort === opt.value}>
@@ -200,8 +201,8 @@
 									on:click={() => setSort(opt.value)}
 									class="w-full text-left px-3 py-2 text-sm transition-colors
 										{$activeSort === opt.value
-										? 'text-[#880E4F] bg-[#FCE4EC] font-semibold'
-										: 'text-[#4A1030] hover:text-[#C2185B] hover:bg-[#FCE4EC]'}"
+										? 'text-plum-mid bg-sakura-pale font-semibold'
+										: 'text-sakura-soft hover:text-sakura-mid hover:bg-sakura-pale'}"
 								>
 									{opt.label}
 								</button>
@@ -215,15 +216,15 @@
 				on:click={() => showFavoritesOnly.update((v) => !v)}
 				class="flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 border
 					{$showFavoritesOnly
-					? 'bg-[#FCE4EC] text-[#880E4F] border-[#C2185B]/40 font-semibold'
-					: 'bg-white text-[#4A1030] border-[#C2185B]/25 hover:border-[#C2185B] hover:text-[#C2185B]'}"
+					? 'bg-flag-salmon text-white border-transparent font-semibold'
+					: 'bg-white text-sakura-soft border-sakura-mid/25 hover:border-sakura-mid hover:text-sakura-mid'}"
 				aria-label={$showFavoritesOnly ? 'Show all images' : 'Show favorites only'}
 				aria-pressed={$showFavoritesOnly}
 			>
 				<Heart size={16} fill={$showFavoritesOnly ? 'currentColor' : 'none'} />
 				<span class="hidden sm:inline">Favorites</span>
 				{#if $favorites.length > 0}
-					<span class="bg-pink-mid text-white text-xs rounded-full w-4 h-4 flex items-center justify-center font-bold">
+					<span class="bg-white/80 text-flag-salmon text-xs rounded-full w-4 h-4 flex items-center justify-center font-bold">
 						{$favorites.length > 9 ? '9+' : $favorites.length}
 					</span>
 				{/if}

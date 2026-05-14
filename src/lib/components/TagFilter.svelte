@@ -5,8 +5,6 @@
 	import TagManager from './TagManager.svelte';
 
 	/** @type {import('../utils/danbooru').DanbooruPost[]} */
-	export let posts = [];
-	/** @type {import('../utils/danbooru').DanbooruPost[]} */
 	export let favoritePosts = [];
 
 	let managerOpen = false;
@@ -37,8 +35,8 @@
 			aria-pressed={$activeSearch === ''}
 			class="px-3 py-1 rounded-full text-xs font-medium transition-all duration-200 border
 				{$activeSearch === ''
-				? 'bg-gradient-to-r from-[#D52D00] via-[#FF9A56] via-[#FFF0E8] to-[#A50062] text-[#1A0008] border-transparent shadow-sm shadow-[#D52D00]/20'
-				: 'bg-white text-[#4A1030] border-[#C2185B]/25 hover:border-[#C2185B] hover:text-[#C2185B] hover:bg-[#FCE4EC]'}"
+				? 'bg-gradient-to-r from-flag-red via-flag-salmon via-flag-white to-flag-purple text-sakura-dark border-transparent shadow-sm shadow-flag-red/20'
+				: 'bg-white text-sakura-soft border-sakura-mid/25 hover:border-sakura-mid hover:text-sakura-mid hover:bg-sakura-pale'}"
 		>
 			All
 		</button>
@@ -49,8 +47,8 @@
 				aria-pressed={$activeSearch === tag}
 				class="px-3 py-1 rounded-full text-xs font-medium transition-all duration-200 border
 					{$activeSearch === tag
-					? 'bg-gradient-to-r from-[#D52D00] via-[#FF9A56] via-[#FFF0E8] to-[#A50062] text-[#1A0008] border-transparent shadow-sm shadow-[#D52D00]/20'
-					: 'bg-white text-[#4A1030] border-[#C2185B]/25 hover:border-[#C2185B] hover:text-[#C2185B] hover:bg-[#FCE4EC]'}"
+					? 'bg-gradient-to-r from-flag-red via-flag-salmon via-flag-white to-flag-purple text-sakura-dark border-transparent shadow-sm shadow-flag-red/20'
+					: 'bg-white text-sakura-soft border-sakura-mid/25 hover:border-sakura-mid hover:text-sakura-mid hover:bg-sakura-pale'}"
 			>
 				{label}
 			</button>
@@ -60,7 +58,7 @@
 	{#if !$showFavoritesOnly}
 		<button
 			on:click={() => (managerOpen = true)}
-			class="shrink-0 flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs text-[#4A1030]/60 border border-[#C2185B]/20 hover:text-[#C2185B] hover:border-[#C2185B]/50 hover:bg-[#FCE4EC] transition-colors"
+			class="shrink-0 flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs text-sakura-soft/60 border border-sakura-mid/20 hover:text-sakura-mid hover:border-sakura-mid/50 hover:bg-sakura-pale transition-colors"
 			aria-label="Manage filter tags"
 		>
 			<SlidersHorizontal size={12} />

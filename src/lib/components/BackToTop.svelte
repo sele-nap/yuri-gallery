@@ -18,7 +18,7 @@
 {#if visible}
 	<button
 		on:click={scrollToTop}
-		class="fixed bottom-6 right-6 z-50 w-10 h-10 rounded-full glass border border-pink-mid/30 flex items-center justify-center text-pink-mid hover:bg-pink-mid/20 transition-all duration-200 hover:scale-110 animate-fade-in shadow-lg shadow-pink-mid/10"
+		class="fixed bottom-6 right-6 z-50 w-10 h-10 rounded-full glass border border-sakura-mid/30 flex items-center justify-center text-sakura-mid hover:bg-sakura-mid/20 transition-all duration-200 hover:scale-110 animate-fade-in shadow-lg shadow-sakura-mid/10"
 		aria-label="Back to top"
 	>
 		<ChevronUp size={18} />

@@ -29,8 +29,8 @@
 	<button
 		on:click={openLightbox}
 		disabled={error}
-		class="block w-full rounded-xl overflow-hidden relative ring-0 shadow-sm shadow-pink-soft/15 transition-all duration-300 focus:outline-none focus:ring-2
-			{error ? 'cursor-default' : 'cursor-zoom-in hover:shadow-md hover:shadow-pink-soft/20 hover:ring-2 ring-pink-mid/60'}"
+		class="block w-full rounded-xl overflow-hidden relative ring-0 shadow-sm shadow-sakura-soft/15 transition-all duration-300 focus:outline-none focus:ring-2
+			{error ? 'cursor-default' : 'cursor-zoom-in hover:shadow-md hover:shadow-sakura-soft/20 hover:ring-2 ring-sakura-mid/60'}"
 	>
 		<!-- Aspect-ratio wrapper prevents layout duplication during loading -->
 		<div
@@ -56,22 +56,22 @@
 					on:error={() => (error = true)}
 				/>
 			{:else}
-				<div class="absolute inset-0 flex items-center justify-center bg-bg-card text-pink-soft/20 text-sm rounded-xl">
+				<div class="absolute inset-0 flex items-center justify-center bg-bg-card text-sakura-soft/20 text-sm rounded-xl">
 					Image unavailable
 				</div>
 			{/if}
 		</div>
 
-		<div class="absolute inset-0 bg-gradient-to-t from-[#130810]/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl">
+		<div class="absolute inset-0 bg-gradient-to-t from-sakura-overlay/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl">
 			<div class="absolute bottom-0 left-0 right-0 p-3">
 				{#if artists.length > 0}
-					<p class="text-pink-mid text-xs font-medium mb-1 truncate">
+					<p class="text-sakura-mid text-xs font-medium mb-1 truncate">
 						{artists.join(', ')}
 					</p>
 				{/if}
 
 				<div class="flex items-center justify-between">
-					<span class="text-pink-soft/60 text-xs flex items-center gap-1">
+					<span class="text-sakura-soft/60 text-xs flex items-center gap-1">
 						<Star size={10} fill="currentColor" />
 						{post.score}
 					</span>
@@ -80,7 +80,7 @@
 						target="_blank"
 						rel="noopener noreferrer"
 						on:click|stopPropagation
-						class="text-pink-soft/50 hover:text-pink-mid text-xs transition-colors"
+						class="text-sakura-soft/50 hover:text-sakura-mid text-xs transition-colors"
 					>
 						Danbooru
 					</a>
@@ -93,8 +93,8 @@
 		on:click={toggleFavorite}
 		class="absolute top-2 right-2 w-8 h-8 rounded-full flex items-center justify-center transition-all duration-200 z-10
 			{isFavorited
-			? 'bg-pink-mid text-white opacity-100 scale-100'
-			: 'bg-bg-primary/70 text-pink-soft/60 opacity-0 group-hover:opacity-100 focus:opacity-100 hover:bg-pink-mid/20 hover:text-pink-mid'}"
+			? 'bg-sakura-glow text-white opacity-100 scale-100'
+			: 'bg-bg-primary/70 text-sakura-soft/60 opacity-0 group-hover:opacity-100 focus:opacity-100 hover:bg-sakura-mid/20 hover:text-sakura-mid'}"
 		aria-label={isFavorited ? 'Remove from favorites' : 'Add to favorites'}
 	>
 		<Heart size={14} fill={isFavorited ? 'currentColor' : 'none'} />
