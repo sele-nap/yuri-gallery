@@ -139,7 +139,7 @@
 				{/if}
 				<img
 					src={post.large_file_url}
-					alt="Yuri artwork"
+					alt={artists.length > 0 ? `Artwork by ${artists.join(', ')}` : `Yuri artwork #${post.id}`}
 					class="max-w-full max-h-[50vh] md:max-h-[65vh] lg:max-h-[80vh] object-contain rounded-2xl shadow-2xl transition-opacity duration-300"
 					class:opacity-0={!imageLoaded}
 					class:opacity-100={imageLoaded}

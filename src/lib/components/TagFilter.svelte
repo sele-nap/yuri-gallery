@@ -21,6 +21,7 @@
 	{#each PRESET_TAGS as { label, tag }}
 		<button
 			on:click={() => activeSearch.set(tag)}
+			aria-pressed={activeTag === tag}
 			class="px-3 py-1 rounded-full text-xs font-medium transition-all duration-200 border
 				{activeTag === tag
 				? 'bg-gradient-to-r from-pink-mid to-purple-mid text-white border-transparent shadow-lg shadow-pink-mid/20'

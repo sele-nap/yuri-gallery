@@ -47,7 +47,7 @@
 			{#if !error}
 				<img
 					src={post.large_file_url}
-					alt="Yuri artwork"
+					alt={artists.length > 0 ? `Artwork by ${artists.join(', ')}` : `Yuri artwork #${post.id}`}
 					loading="lazy"
 					decoding="async"
 					class="absolute inset-0 w-full h-full object-cover transition-all duration-500 group-hover:scale-[1.02]"

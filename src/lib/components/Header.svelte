@@ -58,7 +58,9 @@
 		</a>
 
 		<div class="flex-1 w-full sm:max-w-md relative">
+			<label for="tag-search" class="sr-only">Search tags</label>
 			<input
+				id="tag-search"
 				type="text"
 				bind:value={searchInput}
 				on:input={handleSearch}
@@ -84,7 +86,9 @@
 						{$activeSort
 						? 'bg-purple-mid/20 text-purple-soft border-purple-mid/40'
 						: 'bg-transparent text-pink-soft/60 border-pink-soft/20 hover:border-purple-mid/30 hover:text-pink-soft'}"
-					title="Sort"
+					aria-label="Sort"
+					aria-expanded={sortOpen}
+					aria-haspopup="listbox"
 				>
 					<ArrowUpDown size={14} />
 					<span class="hidden sm:inline text-xs">{currentSortLabel}</span>
@@ -96,19 +100,25 @@
 						class="fixed inset-0 z-40"
 						on:click={() => (sortOpen = false)}
 					></div>
-					<div class="absolute right-0 top-full mt-2 z-50 glass rounded-xl overflow-hidden border border-purple-mid/20 w-36 animate-slide-up">
+					<ul
+						role="listbox"
+						aria-label="Sort order"
+						class="absolute right-0 top-full mt-2 z-50 glass rounded-xl overflow-hidden border border-purple-mid/20 w-36 animate-slide-up"
+					>
 						{#each SORT_OPTIONS as opt}
-							<button
-								on:click={() => setSort(opt.value)}
-								class="w-full text-left px-3 py-2 text-sm transition-colors
-									{$activeSort === opt.value
-									? 'text-purple-soft bg-purple-mid/20'
-									: 'text-pink-soft/60 hover:text-pink-soft hover:bg-purple-mid/10'}"
-							>
-								{opt.label}
-							</button>
+							<li role="option" aria-selected={$activeSort === opt.value}>
+								<button
+									on:click={() => setSort(opt.value)}
+									class="w-full text-left px-3 py-2 text-sm transition-colors
+										{$activeSort === opt.value
+										? 'text-purple-soft bg-purple-mid/20'
+										: 'text-pink-soft/60 hover:text-pink-soft hover:bg-purple-mid/10'}"
+								>
+									{opt.label}
+								</button>
+							</li>
 						{/each}
-					</div>
+					</ul>
 				{/if}
 			</div>
 
