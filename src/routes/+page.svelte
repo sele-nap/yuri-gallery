@@ -163,7 +163,7 @@
 <Header imageCount={posts.length} />
 <TagFilter />
 
-<main class="max-w-7xl mx-auto px-3 pb-16">
+<main id="main-content" class="max-w-7xl mx-auto px-3 pb-16">
 	{#if onlyFavorites && displayedColumns.every((c) => c.length === 0) && !loading}
 		<div class="flex flex-col items-center justify-center py-24 gap-4 animate-slide-up">
 			<p class="text-pink-soft/20"><Heart size={60} /></p>
