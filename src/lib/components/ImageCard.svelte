@@ -1,9 +1,9 @@
 <script>
-	import { Heart, Star } from 'lucide-svelte';
-	import { lightboxPost } from '$lib/stores/gallery.js';
 	import { favorites } from '$lib/stores/favorites.js';
+	import { lightboxPost } from '$lib/stores/gallery.js';
 	import { toast } from '$lib/stores/toast.js';
-	import { parseTags, getDanbooruUrl } from '$lib/utils/danbooru.js';
+	import { getDanbooruUrl, parseTags } from '$lib/utils/danbooru.js';
+	import { Heart, Star } from 'lucide-svelte';
 
 	/** @type {import('../utils/danbooru').DanbooruPost} */
 	export let post;

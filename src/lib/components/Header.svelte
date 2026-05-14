@@ -1,7 +1,7 @@
 <script>
-	import { Heart, ArrowUpDown, X } from 'lucide-svelte';
-	import { showFavoritesOnly, activeSearch, activeSort } from '$lib/stores/gallery.js';
 	import { favorites } from '$lib/stores/favorites.js';
+	import { activeSearch, activeSort, showFavoritesOnly } from '$lib/stores/gallery.js';
+	import { ArrowUpDown, Heart, X } from 'lucide-svelte';
 
 	/** @type {number} */
 	export let imageCount = 0;

@@ -1,17 +1,17 @@
 <script>
-	import { onMount, onDestroy } from 'svelte';
-	import Header from '$lib/components/Header.svelte';
-	import TagFilter from '$lib/components/TagFilter.svelte';
-	import ImageCard from '$lib/components/ImageCard.svelte';
-	import SkeletonCard from '$lib/components/SkeletonCard.svelte';
-	import Lightbox from '$lib/components/Lightbox.svelte';
-	import Toast from '$lib/components/Toast.svelte';
 	import BackToTop from '$lib/components/BackToTop.svelte';
+	import Header from '$lib/components/Header.svelte';
+	import ImageCard from '$lib/components/ImageCard.svelte';
 	import KeyboardShortcuts from '$lib/components/KeyboardShortcuts.svelte';
-	import { Heart } from 'lucide-svelte';
-	import { fetchPosts } from '$lib/utils/danbooru.js';
-	import { activeSearch, activeSort, showFavoritesOnly } from '$lib/stores/gallery.js';
+	import Lightbox from '$lib/components/Lightbox.svelte';
+	import SkeletonCard from '$lib/components/SkeletonCard.svelte';
+	import TagFilter from '$lib/components/TagFilter.svelte';
+	import Toast from '$lib/components/Toast.svelte';
 	import { favorites } from '$lib/stores/favorites.js';
+	import { activeSearch, activeSort, showFavoritesOnly } from '$lib/stores/gallery.js';
+	import { fetchPosts } from '$lib/utils/danbooru.js';
+	import { Heart } from 'lucide-svelte';
+	import { onDestroy, onMount } from 'svelte';
 
 	/** @type {import('../lib/utils/danbooru').DanbooruPost[]} */
 	let posts = [];

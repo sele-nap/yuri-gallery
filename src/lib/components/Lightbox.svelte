@@ -1,9 +1,9 @@
 <script>
-	import { Heart, Play, Square, Copy, ExternalLink, Download, ChevronLeft, ChevronRight, X, Star } from 'lucide-svelte';
-	import { lightboxPost, activeSearch } from '$lib/stores/gallery.js';
 	import { favorites } from '$lib/stores/favorites.js';
+	import { activeSearch, lightboxPost } from '$lib/stores/gallery.js';
 	import { toast } from '$lib/stores/toast.js';
-	import { parseTags, getDanbooruUrl } from '$lib/utils/danbooru.js';
+	import { getDanbooruUrl, parseTags } from '$lib/utils/danbooru.js';
+	import { ChevronLeft, ChevronRight, Copy, Download, ExternalLink, Heart, Play, Square, Star, X } from 'lucide-svelte';
 	import { onDestroy } from 'svelte';
 
 	/** @type {import('../utils/danbooru').DanbooruPost[]} */
