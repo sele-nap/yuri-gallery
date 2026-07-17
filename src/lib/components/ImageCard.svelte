@@ -7,6 +7,8 @@
 
 	/** @type {import('../utils/danbooru').DanbooruPost} */
 	export let post;
+	/** First-row cards are visible on load — skip lazy-loading so LCP isn't delayed. */
+	export let priority = false;
 
 	let loaded = false;
 	let error = false;
@@ -29,16 +31,15 @@
 	<button
 		on:click={openLightbox}
 		disabled={error}
-		class="block w-full rounded-xl overflow-hidden relative ring-0 shadow-sm shadow-sakura-soft/15 transition-all duration-300 focus:outline-none focus:ring-2
-			{error ? 'cursor-default' : 'cursor-zoom-in hover:shadow-md hover:shadow-sakura-soft/20 hover:ring-2 ring-sakura-mid/60'}"
+		class="block w-full rounded-xl overflow-hidden relative ring-0 shadow-sm shadow-ink-700/15 transition-shadow duration-300 focus:outline-none focus:ring-2
+			{error ? 'cursor-default' : 'cursor-zoom-in hover:shadow-md hover:shadow-ink-700/20 hover:ring-2 ring-rose-500/60'}"
 	>
-		<!-- Aspect-ratio wrapper prevents layout duplication during loading -->
 		<div
 			class="relative w-full overflow-hidden min-h-[120px]"
 			style="aspect-ratio: {post.image_width}/{post.image_height};"
 		>
 			{#if !loaded && !error}
-				<div class="absolute inset-0 bg-bg-card overflow-hidden">
+				<div class="absolute inset-0 bg-paper overflow-hidden">
 					<div class="shimmer w-full h-full"></div>
 				</div>
 			{/if}
@@ -47,31 +48,34 @@
 				<img
 					src={post.large_file_url}
 					alt={artists.length > 0 ? `Artwork by ${artists.join(', ')}` : `Yuri artwork #${post.id}`}
-					loading="lazy"
+					width={post.image_width}
+					height={post.image_height}
+					loading={priority ? 'eager' : 'lazy'}
+					fetchpriority={priority ? 'high' : 'auto'}
 					decoding="async"
-					class="absolute inset-0 w-full h-full object-cover transition-all duration-500 group-hover:scale-[1.02]"
+					class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.02]"
 					class:opacity-0={!loaded}
 					class:animate-fade-in={loaded}
 					on:load={() => (loaded = true)}
 					on:error={() => (error = true)}
 				/>
 			{:else}
-				<div class="absolute inset-0 flex items-center justify-center bg-bg-card text-sakura-soft/20 text-sm rounded-xl">
+				<div class="absolute inset-0 flex items-center justify-center bg-paper text-ink-700/20 text-sm rounded-xl">
 					Image unavailable
 				</div>
 			{/if}
 		</div>
 
-		<div class="absolute inset-0 bg-gradient-to-t from-sakura-overlay/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl">
+		<div class="absolute inset-0 bg-gradient-to-t from-ink-900/90 via-ink-900/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl">
 			<div class="absolute bottom-0 left-0 right-0 p-3">
 				{#if artists.length > 0}
-					<p class="text-sakura-mid text-xs font-medium mb-1 truncate">
+					<p class="text-white text-xs font-medium mb-1 truncate">
 						{artists.join(', ')}
 					</p>
 				{/if}
 
 				<div class="flex items-center justify-between">
-					<span class="text-sakura-soft/60 text-xs flex items-center gap-1">
+					<span class="text-white/70 text-xs flex items-center gap-1 tabular-nums">
 						<Star size={10} fill="currentColor" />
 						{post.score}
 					</span>
@@ -80,7 +84,7 @@
 						target="_blank"
 						rel="noopener noreferrer"
 						on:click|stopPropagation
-						class="text-sakura-soft/50 hover:text-sakura-mid text-xs transition-colors"
+						class="text-white/60 hover:text-white text-xs transition-colors"
 					>
 						Danbooru
 					</a>
@@ -91,10 +95,10 @@
 
 	<button
 		on:click={toggleFavorite}
-		class="absolute top-2 right-2 w-8 h-8 rounded-full flex items-center justify-center transition-all duration-200 z-10
+		class="absolute top-2 right-2 w-8 h-8 rounded-full flex items-center justify-center transition-[background-color,color,opacity] duration-200 z-10
 			{isFavorited
-			? 'bg-sakura-glow text-white opacity-100 scale-100'
-			: 'bg-bg-primary/70 text-sakura-soft/60 opacity-0 group-hover:opacity-100 focus:opacity-100 hover:bg-sakura-mid/20 hover:text-sakura-mid'}"
+			? 'bg-rose-400 text-white opacity-100 scale-100'
+			: 'bg-dawn-50/70 text-ink-700/60 opacity-0 group-hover:opacity-100 focus:opacity-100 hover:bg-rose-500/20 hover:text-rose-500'}"
 		aria-label={isFavorited ? 'Remove from favorites' : 'Add to favorites'}
 	>
 		<Heart size={14} fill={isFavorited ? 'currentColor' : 'none'} />

@@ -111,7 +111,7 @@
 	<!-- svelte-ignore a11y-click-events-have-key-events a11y-no-noninteractive-element-interactions -->
 	<div
 		bind:this={dialogEl}
-		class="fixed inset-0 z-[60] bg-bg-primary/96 backdrop-blur-xl flex items-center justify-center p-4"
+		class="fixed inset-0 z-[60] bg-dawn-50/96 backdrop-blur-xl flex items-center justify-center p-4 overscroll-contain"
 		on:click|self={close}
 		role="dialog"
 		aria-modal="true"
@@ -120,7 +120,7 @@
 	>
 		<button
 			on:click={close}
-			class="absolute top-4 right-4 w-10 h-10 rounded-full glass flex items-center justify-center text-sakura-soft hover:text-sakura-mid transition-colors z-10"
+			class="absolute top-4 right-4 w-10 h-10 rounded-full glass flex items-center justify-center text-ink-700 hover:text-rose-500 transition-colors z-10"
 			aria-label="Close"
 		>
 			<X size={18} />
@@ -128,11 +128,10 @@
 
 		<div class="flex flex-col lg:flex-row gap-4 max-h-[90vh] w-full max-w-6xl animate-slide-up overflow-y-auto lg:overflow-visible">
 			<div class="flex-1 flex items-center justify-center min-h-0 relative">
-				<!-- Nav arrows inside image container, won't conflict with close button -->
 				{#if currentIndex > 0}
 					<button
 						on:click={prev}
-						class="absolute left-2 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full glass flex items-center justify-center text-sakura-soft hover:text-sakura-mid transition-colors z-10"
+						class="absolute left-2 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full glass flex items-center justify-center text-ink-700 hover:text-rose-500 transition-colors z-10"
 						aria-label="Previous"
 					>
 						<ChevronLeft size={20} />
@@ -141,7 +140,7 @@
 				{#if currentIndex < posts.length - 1}
 					<button
 						on:click={next}
-						class="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full glass flex items-center justify-center text-sakura-soft hover:text-sakura-mid transition-colors z-10"
+						class="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full glass flex items-center justify-center text-ink-700 hover:text-rose-500 transition-colors z-10"
 						aria-label="Next"
 					>
 						<ChevronRight size={20} />
@@ -149,19 +148,21 @@
 				{/if}
 
 				{#if !imageLoaded}
-					<div class="w-full max-h-[50vh] lg:max-h-[80vh] aspect-square bg-bg-card rounded-2xl animate-pulse"></div>
+					<div class="w-full max-h-[50vh] lg:max-h-[80vh] aspect-square bg-paper rounded-2xl animate-pulse"></div>
 				{/if}
 				<img
 					src={post.large_file_url}
 					alt={imageAlt}
+					width={post.image_width}
+					height={post.image_height}
 					class="max-w-full max-h-[50vh] md:max-h-[65vh] lg:max-h-[80vh] object-contain rounded-2xl shadow-2xl transition-opacity duration-300"
 					class:opacity-0={!imageLoaded}
 					class:opacity-100={imageLoaded}
 					on:load={() => (imageLoaded = true)}
 				/>
 				{#if slideshowActive}
-					<div class="absolute bottom-3 left-1/2 -translate-x-1/2 flex items-center gap-2 glass px-3 py-1.5 rounded-full text-xs text-plum-mid">
-						<span class="w-2 h-2 rounded-full bg-plum-mid animate-pulse"></span>
+					<div class="absolute bottom-3 left-1/2 -translate-x-1/2 flex items-center gap-2 glass px-3 py-1.5 rounded-full text-xs text-mauve-600">
+						<span class="w-2 h-2 rounded-full bg-mauve-600 animate-pulse"></span>
 						Slideshow
 					</div>
 				{/if}
@@ -170,8 +171,8 @@
 			<div class="lg:w-72 shrink-0 glass rounded-2xl p-4 overflow-y-auto max-h-[40vh] lg:max-h-[80vh] flex flex-col gap-4">
 				<button
 					on:click={toggleFavorite}
-					class="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-full text-sm font-medium transition-all duration-200 border
-						{isFavorited ? 'bg-sakura-pale text-plum-mid border-sakura-mid/40' : 'bg-white text-sakura-soft border-sakura-mid/25 hover:border-sakura-mid hover:text-sakura-mid'}"
+					class="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-full text-sm font-medium transition-colors duration-200 border
+						{isFavorited ? 'bg-blush-100 text-mauve-600 border-rose-500/40' : 'bg-paper text-ink-700 border-rose-500/25 hover:border-rose-500 hover:text-rose-500'}"
 				>
 					<Heart size={14} fill={isFavorited ? 'currentColor' : 'none'} />
 					{isFavorited ? 'Saved' : 'Save'}
@@ -180,7 +181,7 @@
 				<div class="flex gap-2">
 					<button
 						on:click={toggleSlideshow}
-						class="btn-icon {slideshowActive ? '!text-plum-mid !border-sakura-mid/40 !bg-sakura-pale' : ''}"
+						class="btn-icon {slideshowActive ? '!text-mauve-600 !border-rose-500/40 !bg-blush-100' : ''}"
 						aria-label={slideshowActive ? 'Stop slideshow' : 'Start slideshow'}
 						aria-pressed={slideshowActive}
 					>
@@ -213,12 +214,12 @@
 					</a>
 				</div>
 
-				<div class="text-xs text-sakura-soft/60 space-y-1">
-					<div>ID: <span class="text-sakura-soft">#{post.id}</span></div>
-					<div>Resolution: <span class="text-sakura-soft">{post.image_width} × {post.image_height}</span></div>
+				<div class="text-xs text-ink-700/60 space-y-1 tabular-nums">
+					<div>ID: <span class="text-ink-700">#{post.id}</span></div>
+					<div>Resolution: <span class="text-ink-700">{post.image_width} × {post.image_height}</span></div>
 					<div class="flex items-center gap-1">
 						Score:
-						<span class="text-sakura-soft flex items-center gap-1">
+						<span class="text-ink-700 flex items-center gap-1">
 							<Star size={10} fill="currentColor" />
 							{post.score}
 						</span>
@@ -233,7 +234,7 @@
 					{#if tags.length > 0}
 						<div>
 							<p class="text-xs font-semibold uppercase tracking-wider mb-2
-								{badge === 'tag-badge-artist' ? 'text-sakura-mid' : badge === 'tag-badge-character' ? 'text-plum-mid' : 'text-plum-bright'}"
+								{badge === 'tag-badge-artist' ? 'text-rose-500' : badge === 'tag-badge-character' ? 'text-mauve-600' : 'text-coral-600'}"
 							>{label}</p>
 							<div class="flex flex-wrap gap-1.5">
 								{#each tags as tag}

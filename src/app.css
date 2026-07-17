@@ -7,6 +7,22 @@
     box-sizing: border-box;
   }
 
+  body {
+    font-family: theme('fontFamily.body');
+  }
+
+  html {
+    -webkit-tap-highlight-color: transparent;
+    scrollbar-color: theme('colors.rose.200') theme('colors.blush.200');
+  }
+
+  button,
+  a,
+  input,
+  [role='button'] {
+    touch-action: manipulation;
+  }
+
   @media (prefers-reduced-motion: no-preference) {
     html {
       scroll-behavior: smooth;
@@ -18,20 +34,27 @@
   }
 
   ::-webkit-scrollbar-track {
-    background: #f9e4ef;
+    background: theme('colors.blush.200');
   }
 
   ::-webkit-scrollbar-thumb {
-    background: #c2185b;
+    background: linear-gradient(
+      180deg,
+      theme('colors.coral.200') 0%,
+      theme('colors.coral.100') 25%,
+      theme('colors.blush.200') 50%,
+      theme('colors.rose.200') 75%,
+      theme('colors.rose.400') 100%
+    );
     border-radius: 3px;
   }
 
   ::-webkit-scrollbar-thumb:hover {
-    background: #880e4f;
+    filter: brightness(0.93);
   }
 
   ::selection {
-    background: #c2185b;
+    background: theme('colors.rose.500');
     color: #fff;
   }
 
@@ -66,50 +89,60 @@
   }
 
   .tag-badge {
-    @apply inline-block px-2 py-0.5 rounded-full text-xs font-medium cursor-pointer transition-all duration-200;
+    @apply inline-block px-2 py-0.5 rounded-full text-xs font-medium cursor-pointer transition-colors duration-200;
   }
 
-  /* Offset hue from background: saturated text, differently tinted bg */
   .tag-badge-artist {
     @apply tag-badge border;
-    background-color: #fce4ec;
-    color: #880e4f;
+    background-color: theme('colors.blush.100');
+    color: theme('colors.mauve.600');
     border-color: rgba(194, 24, 91, 0.3);
   }
   .tag-badge-artist:hover {
-    background-color: #f8bbd9;
+    background-color: theme('colors.rose.200');
   }
 
   .tag-badge-general {
     @apply tag-badge border;
-    background-color: #fbe9e7;
-    color: #bf360c;
+    background-color: theme('colors.coral.100');
+    color: theme('colors.coral.600');
     border-color: rgba(230, 74, 25, 0.3);
   }
   .tag-badge-general:hover {
-    background-color: #ffccbc;
+    background-color: theme('colors.coral.200');
   }
 
   .tag-badge-character {
     @apply tag-badge border;
-    background-color: #f9e4ef;
-    color: #4a1030;
+    background-color: theme('colors.dawn.100');
+    color: theme('colors.ink.700');
     border-color: rgba(136, 14, 79, 0.25);
   }
   .tag-badge-character:hover {
-    background-color: #f3c9df;
+    background-color: theme('colors.blush.200');
   }
 
-  /* Lesbian flag gradient on btn-primary — white text has sufficient contrast over the dark ends */
   .btn-primary {
-    @apply px-5 py-2 rounded-full font-semibold text-sm transition-all duration-200 hover:opacity-90 hover:scale-105 active:scale-95;
-    background: linear-gradient(to right, #bf360c, #e64a19, #c2185b, #880e4f);
+    @apply px-5 py-2 rounded-full font-semibold text-sm transition-[opacity,transform] duration-200 hover:opacity-90 hover:scale-105 active:scale-95;
+    background: theme('colors.rose.500');
     color: white;
   }
 
-  /* btn-icon: white bg, dark border and text — contrast guaranteed */
+  .bg-dusk {
+    background: linear-gradient(
+      180deg,
+      theme('colors.dawn.50') 0%,
+      theme('colors.dawn.100') 16%,
+      theme('colors.dawn.200') 32%,
+      theme('colors.coral.200') 48%,
+      theme('colors.blush.200') 64%,
+      theme('colors.rose.200') 80%,
+      theme('colors.mauve.200') 100%
+    );
+  }
+
   .btn-icon {
-    @apply flex items-center justify-center px-3 py-2 rounded-full text-sm font-medium transition-colors bg-white border;
+    @apply flex items-center justify-center px-3 py-2 rounded-full text-sm font-medium transition-colors bg-paper border;
     color: #4a1030;
     border-color: rgba(194, 24, 91, 0.3);
   }
@@ -118,9 +151,8 @@
     border-color: #c2185b;
   }
 
-  /* Glass: light rosy-tinted frosted background with drop shadow for separation */
   .glass {
-    background: rgba(253, 240, 245, 0.96);
+    background: rgba(255, 251, 248, 0.96);
     backdrop-filter: blur(14px);
     -webkit-backdrop-filter: blur(14px);
     border: 1px solid rgba(194, 24, 91, 0.18);
@@ -129,7 +161,13 @@
       0 1px 3px rgba(74, 16, 48, 0.06);
   }
 
-  /* glass-dark: used inside the lightbox only (always dark background) */
+  .glass-header {
+    background: rgba(255, 249, 245, 0.62);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border-bottom: 1px solid rgba(194, 24, 91, 0.16);
+  }
+
   .glass-dark {
     background: rgba(20, 5, 12, 0.9);
     backdrop-filter: blur(14px);
@@ -166,7 +204,12 @@
 }
 
 .shimmer {
-  background: linear-gradient(90deg, #f9e4ef 0%, #f3c9df 50%, #f9e4ef 100%);
+  background: linear-gradient(
+    90deg,
+    theme('colors.blush.200') 0%,
+    theme('colors.rose.200') 50%,
+    theme('colors.blush.200') 100%
+  );
   background-size: 200% 100%;
   animation: shimmer 1.5s infinite;
 }

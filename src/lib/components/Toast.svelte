@@ -12,8 +12,8 @@
 		<div
 			class="px-4 py-2.5 rounded-full text-sm font-medium shadow-lg animate-slide-up
 				{t.type === 'success'
-				? 'bg-sakura-mid text-white'
-				: 'bg-bg-card border border-plum-mid/30 text-sakura-soft'}"
+				? 'bg-rose-500 text-white'
+				: 'bg-paper border border-mauve-600/30 text-ink-700'}"
 		>
 			{t.message}
 		</div>

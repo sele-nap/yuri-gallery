@@ -19,8 +19,6 @@ const LIMIT = 24;
  */
 
 export async function fetchPosts({ page = 1, search = '', sort = '' } = {}) {
-  // Danbooru free tier: 2 tags max — "yuri" takes slot 1, one user tag fills slot 2.
-  // If the user types multiple space-separated tags, only the first is used.
   const userTag = search.trim().split(/\s+/)[0] || sort;
   const queryTags = userTag ? `yuri ${userTag}` : DEFAULT_TAGS;
   const url = new URL(`${BASE_URL}/posts.json`);

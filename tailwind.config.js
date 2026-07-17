@@ -4,42 +4,48 @@ export default {
   theme: {
     extend: {
       colors: {
-        bg: {
-          primary: '#FDF0F5',
-          secondary: '#F9E4EF',
-          card: '#FFFFFF',
+        paper: '#FFFBF8',
+        dawn: {
+          50: '#FFF9F5',
+          100: '#FFEFE3',
+          200: '#FFDCC4',
         },
-        sakura: {
-          dark: '#1A0008',
-          overlay: '#130810',
-          soft: '#4A1030',
-          muted: '#9E7080',
-          blush: '#F3C9DF',
-          pale: '#FCE4EC',
-          rose: '#F8BBD9',
-          glow: '#F48FB1',
-          mid: '#C2185B',
-          bright: '#E64A19',
+        coral: {
+          100: '#FFEAE0',
+          200: '#FFCCBC',
+          500: '#E64A19',
+          600: '#BF360C',
         },
-        peach: {
-          pale: '#FBE9E7',
-          light: '#FFCCBC',
+        blush: {
+          100: '#FCE4EC',
+          200: '#F3C9DF',
         },
-        plum: {
-          soft: '#7B1F4A',
-          mid: '#880E4F',
-          bright: '#BF360C',
+        rose: {
+          200: '#F8BBD9',
+          400: '#F48FB1',
+          500: '#C2185B',
         },
-        flag: {
-          red: '#D52D00',
-          salmon: '#FF9A56',
-          white: '#FFF0E8',
-          purple: '#A50062',
+        mauve: {
+          200: '#E9A8CE',
+          400: '#7B1F4A',
+          600: '#880E4F',
+        },
+        ink: {
+          900: '#1A0008',
+          700: '#4A1030',
+          400: '#9E7080',
         },
       },
       fontFamily: {
-        display: ['"Playfair Display"', 'serif'],
-        body: ['"Inter"', 'sans-serif'],
+        display: ['"Fraunces"', 'serif'],
+        body: ['"Nunito Sans"', 'sans-serif'],
+      },
+      fontSize: {
+        'display-xl': ['2.75rem', { lineHeight: '1', letterSpacing: '0.01em' }],
+        'display-lg': [
+          '1.5rem',
+          { lineHeight: '1.2', letterSpacing: '0.01em' },
+        ],
       },
       animation: {
         'fade-in': 'fadeIn 0.4s ease forwards',

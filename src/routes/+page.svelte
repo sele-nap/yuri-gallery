@@ -11,7 +11,6 @@
 	import { favorites } from '$lib/stores/favorites.js';
 	import { activeSearch, activeSort, showFavoritesOnly } from '$lib/stores/gallery.js';
 	import { fetchPosts, fetchPostsByIds } from '$lib/utils/danbooru.js';
-	import { Heart } from 'lucide-svelte';
 	import { onDestroy, onMount } from 'svelte';
 
 	/** @type {import('../lib/utils/danbooru').DanbooruPost[]} */
@@ -34,6 +33,7 @@
 	let favoritePosts = [];
 	let favoritesLoading = false;
 	let loadedFavKey = '';
+	let urlInitialized = false;
 
 	$: {
 		const key = ($showFavoritesOnly ? '1' : '0') + ':' + $favorites.join(',');
@@ -148,6 +148,12 @@
 	}
 
 	onMount(() => {
+		const params = new URLSearchParams(window.location.search);
+		if (params.has('q')) activeSearch.set(params.get('q'));
+		if (params.has('sort')) activeSort.set(params.get('sort'));
+		if (params.get('fav') === '1') showFavoritesOnly.set(true);
+		urlInitialized = true;
+
 		window.addEventListener('resize', handleResize);
 
 		observer = new IntersectionObserver(
@@ -172,6 +178,15 @@
 	$: if (sentinel && observer) {
 		observer.observe(sentinel);
 	}
+
+	$: if (browser && urlInitialized) {
+		const params = new URLSearchParams();
+		if ($activeSearch) params.set('q', $activeSearch);
+		if ($activeSort) params.set('sort', $activeSort);
+		if ($showFavoritesOnly) params.set('fav', '1');
+		const qs = params.toString();
+		history.replaceState(history.state, '', qs ? `?${qs}` : window.location.pathname);
+	}
 </script>
 
 <svelte:head>
@@ -188,22 +203,22 @@
 <main id="main-content" class="max-w-7xl mx-auto px-3 pb-16">
 	{#if $showFavoritesOnly && filteredFavoritePosts.length === 0 && !loading && !favoritesLoading}
 		<div class="flex flex-col items-center justify-center py-24 gap-4 animate-slide-up">
-			<div class="text-sakura-soft/20" aria-hidden="true"><Heart size={60} /></div>
-			<p class="text-sakura-soft/40 text-center">
+			<img src="/flower.png" alt="" width="60" height="60" class="w-[60px] h-[60px] opacity-20" aria-hidden="true" />
+			<p class="text-ink-700/40 text-center">
 				No favorites yet.<br />
-				<span class="text-sakura-soft/20 text-sm">Click ♡ on any image to save it here.</span>
+				<span class="text-ink-700/20 text-sm">Click ♡ on any image to save it here.</span>
 			</p>
 		</div>
 
 	{:else if error && posts.length === 0}
 		<div class="flex flex-col items-center justify-center py-24 gap-4 animate-slide-up">
-			<p class="text-sakura-soft/40 text-center">{error}</p>
+			<p class="text-ink-700/40 text-center">{error}</p>
 			<button on:click={resetAndLoad} class="btn-primary">Try again</button>
 		</div>
 
 	{:else if !hasMore && posts.length === 0 && !loading}
 		<div class="flex flex-col items-center justify-center py-24 gap-4 animate-slide-up">
-			<p class="text-sakura-soft/40 text-center">No results for "<span class="text-sakura-mid">{$activeSearch}</span>".</p>
+			<p class="text-ink-700/40 text-center">No results for “<span class="text-rose-500">{$activeSearch}</span>”.</p>
 			<button on:click={() => activeSearch.set('')} class="btn-primary">Clear search</button>
 		</div>
 
@@ -211,8 +226,8 @@
 		<div class="masonry">
 			{#each displayedColumns as column}
 				<div class="masonry-col">
-					{#each column as post (post.id)}
-						<ImageCard {post} />
+					{#each column as post, idx (post.id)}
+						<ImageCard {post} priority={idx === 0} />
 					{/each}
 					{#if $showFavoritesOnly ? favoritesLoading : loading}
 						<SkeletonCard />
@@ -224,14 +239,15 @@
 
 		{#if error}
 			<div class="text-center py-8">
-				<p class="text-sakura-soft/40 text-sm mb-3">{error}</p>
+				<p class="text-ink-700/40 text-sm mb-3">{error}</p>
 				<button on:click={loadMore} class="btn-primary">Try again</button>
 			</div>
 		{/if}
 
 		{#if !hasMore && posts.length > 0}
-			<div class="text-center py-12">
-				<p class="text-sakura-soft/20 text-sm font-display italic">~ End of gallery ~</p>
+			<div class="flex items-center justify-center gap-2 py-12 text-ink-700/20">
+				<img src="/flower.png" alt="" width="14" height="14" class="w-3.5 h-3.5 opacity-60" />
+				<p class="text-sm font-display italic">End of gallery</p>
 			</div>
 		{/if}
 

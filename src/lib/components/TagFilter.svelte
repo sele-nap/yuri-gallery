@@ -15,7 +15,6 @@
 		const counts = /** @type {Record<string, number>} */ ({});
 		for (const post of favoritePosts) {
 			for (const tag of post.tag_string_general.split(' ').filter(Boolean)) {
-				// skip tags that are purely symbols/punctuation
 				if (tag.replace(/[^\w]/g, '').length < 2) continue;
 				counts[tag] = (counts[tag] || 0) + 1;
 			}
@@ -28,15 +27,15 @@
 	})();
 </script>
 
-<div class="flex items-center gap-2 px-4 py-3">
+<div class="max-w-7xl mx-auto flex items-center gap-2 px-4 py-3">
 	<nav aria-label="Filter by tag" class="flex flex-wrap items-center gap-2 flex-1">
 		<button
 			on:click={() => activeSearch.set('')}
 			aria-pressed={$activeSearch === ''}
-			class="px-3 py-1 rounded-full text-xs font-medium transition-all duration-200 border
+			class="px-3 py-1 rounded-full text-xs font-medium transition-colors duration-200 border
 				{$activeSearch === ''
-				? 'bg-gradient-to-r from-flag-red via-flag-salmon via-flag-white to-flag-purple text-sakura-dark border-transparent shadow-sm shadow-flag-red/20'
-				: 'bg-white text-sakura-soft border-sakura-mid/25 hover:border-sakura-mid hover:text-sakura-mid hover:bg-sakura-pale'}"
+				? 'bg-gradient-to-r from-coral-500 via-rose-500 to-mauve-600 text-white border-transparent shadow-sm shadow-coral-500/20'
+				: 'bg-paper text-ink-700 border-rose-500/25 hover:border-rose-500 hover:text-rose-500 hover:bg-blush-100'}"
 		>
 			All
 		</button>
@@ -45,10 +44,10 @@
 			<button
 				on:click={() => activeSearch.set(tag)}
 				aria-pressed={$activeSearch === tag}
-				class="px-3 py-1 rounded-full text-xs font-medium transition-all duration-200 border
+				class="px-3 py-1 rounded-full text-xs font-medium transition-colors duration-200 border
 					{$activeSearch === tag
-					? 'bg-gradient-to-r from-flag-red via-flag-salmon via-flag-white to-flag-purple text-sakura-dark border-transparent shadow-sm shadow-flag-red/20'
-					: 'bg-white text-sakura-soft border-sakura-mid/25 hover:border-sakura-mid hover:text-sakura-mid hover:bg-sakura-pale'}"
+					? 'bg-gradient-to-r from-coral-500 via-rose-500 to-mauve-600 text-white border-transparent shadow-sm shadow-coral-500/20'
+					: 'bg-paper text-ink-700 border-rose-500/25 hover:border-rose-500 hover:text-rose-500 hover:bg-blush-100'}"
 			>
 				{label}
 			</button>
@@ -58,7 +57,7 @@
 	{#if !$showFavoritesOnly}
 		<button
 			on:click={() => (managerOpen = true)}
-			class="shrink-0 flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs text-sakura-soft/60 border border-sakura-mid/20 hover:text-sakura-mid hover:border-sakura-mid/50 hover:bg-sakura-pale transition-colors"
+			class="shrink-0 flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs text-ink-700/60 border border-rose-500/20 hover:text-rose-500 hover:border-rose-500/50 hover:bg-blush-100 transition-colors"
 			aria-label="Manage filter tags"
 		>
 			<SlidersHorizontal size={12} />

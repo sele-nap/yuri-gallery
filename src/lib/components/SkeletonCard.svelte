@@ -7,7 +7,7 @@
 	style="height: {height}px;"
 	aria-hidden="true"
 >
-	<div class="w-full h-full bg-bg-card relative overflow-hidden">
+	<div class="w-full h-full bg-paper relative overflow-hidden">
 		<div class="shimmer absolute inset-0"></div>
 	</div>
 </div>
