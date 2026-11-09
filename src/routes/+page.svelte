@@ -141,7 +141,14 @@
 				page += 1;
 			}
 		} catch (e) {
-			error = 'Failed to load images. Please try again in a moment.';
+			const status = /** @type {any} */ (e)?.status;
+			if (status >= 500) {
+				error = `Danbooru is currently unavailable (${status}). Try again in a few minutes.`;
+			} else if (e instanceof TypeError) {
+				error = "Couldn't load images.";
+			} else {
+				error = 'Failed to load images. Please try again.';
+			}
 		} finally {
 			loading = false;
 		}
@@ -211,8 +218,12 @@
 		</div>
 
 	{:else if error && posts.length === 0}
-		<div class="flex flex-col items-center justify-center py-24 gap-4 animate-slide-up">
-			<p class="text-ink-700/40 text-center">{error}</p>
+		<div class="flex flex-col items-center justify-center py-24 gap-6 animate-slide-up">
+			<img src="/flower.png" alt="" width="60" height="60" class="w-[60px] h-[60px] opacity-20" aria-hidden="true" />
+			<div class="text-center space-y-1">
+				<p class="text-ink-700/50">{error}</p>
+				<p class="text-ink-700/25 text-sm">Danbooru may be under maintenance.</p>
+			</div>
 			<button on:click={resetAndLoad} class="btn-primary">Try again</button>
 		</div>
 
@@ -238,8 +249,8 @@
 		</div>
 
 		{#if error}
-			<div class="text-center py-8">
-				<p class="text-ink-700/40 text-sm mb-3">{error}</p>
+			<div class="text-center py-8 space-y-3">
+				<p class="text-ink-700/40 text-sm">{error}</p>
 				<button on:click={loadMore} class="btn-primary">Try again</button>
 			</div>
 		{/if}

@@ -18,6 +18,13 @@ const LIMIT = 24;
  * @property {string} file_ext
  */
 
+/** @param {number} status */
+function apiError(status) {
+  const err = new Error(`Danbooru API error: ${status}`);
+  /** @type {any} */ (err).status = status;
+  return err;
+}
+
 export async function fetchPosts({ page = 1, search = '', sort = '' } = {}) {
   const userTag = search.trim().split(/\s+/)[0] || sort;
   const queryTags = userTag ? `yuri ${userTag}` : DEFAULT_TAGS;
@@ -27,7 +34,7 @@ export async function fetchPosts({ page = 1, search = '', sort = '' } = {}) {
   url.searchParams.set('page', String(page));
 
   const res = await fetch(url.toString());
-  if (!res.ok) throw new Error(`Danbooru API error: ${res.status}`);
+  if (!res.ok) throw apiError(res.status);
 
   const data = /** @type {DanbooruPost[]} */ (await res.json());
   return data.filter(
@@ -65,7 +72,7 @@ export async function fetchPostsByIds(ids) {
   url.searchParams.set('tags', `id:${ids.join(',')}`);
   url.searchParams.set('limit', String(Math.min(ids.length, 200)));
   const res = await fetch(url.toString());
-  if (!res.ok) throw new Error(`Danbooru API error: ${res.status}`);
+  if (!res.ok) throw apiError(res.status);
   const data = /** @type {DanbooruPost[]} */ (await res.json());
   return data.filter(
     (p) =>
